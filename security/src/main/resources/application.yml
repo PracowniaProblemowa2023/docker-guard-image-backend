@@ -1,1 +1,19 @@
+keycloak:
+  realm: external
+  auth-server-url: http://localhost:8180
+  client-id: external-client
+  client-secret: fBSdyFnp2pZPTtMRf3yzoT2U51Ywvf2q
 
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${keycloak.auth-server-url}/realms/${keycloak.realm}
+          jwk-set-uri: ${keycloak.auth-server-url}/realms/${keycloak.realm}/protocol/openid-connect/certs
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
