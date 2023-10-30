@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 @Getter
@@ -18,6 +19,7 @@ public class Comment {
     private String commentId;
 
     @Column(name = "text")
+    @NotEmpty
     private String text;
 
     @Column(name = "date")

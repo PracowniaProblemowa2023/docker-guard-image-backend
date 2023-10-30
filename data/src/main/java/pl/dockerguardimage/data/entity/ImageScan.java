@@ -1,11 +1,11 @@
 package pl.dockerguardimage.data.entity;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.File;
+import jakarta.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -22,9 +22,11 @@ public class ImageScan {
     private String imageScanId;
 
     @Column(name = "name")
+    @NotEmpty
     private String name;
 
     @Column(name = "url")
+    @NotEmpty
     private String url;
 
     @Column(name = "date")
@@ -38,6 +40,4 @@ public class ImageScan {
 
     @OneToMany(mappedBy="imageScan")
     private Set<FileAccess> fileAccesses;
-
-
 }

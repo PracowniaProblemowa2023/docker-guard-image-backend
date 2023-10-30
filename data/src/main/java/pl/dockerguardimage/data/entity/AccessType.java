@@ -1,10 +1,11 @@
 package pl.dockerguardimage.data.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.io.File;
-
+import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
@@ -19,9 +20,11 @@ public class AccessType {
     private String accessTypeId;
 
     @Column(name = "name")
+    @NotEmpty
     private String name;
 
     @Column(name = "description")
+    @NotEmpty
     private String description;
 
     @OneToOne(mappedBy = "accessType")

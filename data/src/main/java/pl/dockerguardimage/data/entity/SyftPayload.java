@@ -1,10 +1,11 @@
 package pl.dockerguardimage.data.entity;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import jakarta.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
 @Getter
@@ -15,20 +16,24 @@ import java.util.Set;
 public class SyftPayload {
 
     @Id
-    @Column(name = "syft_paylaod_id")
+    @Column(name = "syft_payload_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String syftPayloadId;
 
     @Column(name = "name")
+    @NotEmpty
     private String name;
 
     @Column(name = "version")
+    @NotEmpty
     private String version;
 
     @Column(name = "type")
+    @NotEmpty
     private String type;
 
-    @Column(name = "result")
+    @Enumerated(EnumType.STRING)
+    @NotEmpty
     private Result result;
 
     @OneToMany(mappedBy="syftPayload")

@@ -1,11 +1,12 @@
 package pl.dockerguardimage.data.entity;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.File;
+import jakarta.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,12 +23,19 @@ public class User {
     private String userId;
 
     @Column(name = "username")
+    @NotEmpty
     private String username;
 
     @Column(name = "password")
+    @NotEmpty
     private String password;
 
+    @Column(name = "email")
+    @Email
+    private String email;
+
     @Column(name = "locale")
+    @NotEmpty
     private String locale;
 
     @OneToMany(mappedBy="user")

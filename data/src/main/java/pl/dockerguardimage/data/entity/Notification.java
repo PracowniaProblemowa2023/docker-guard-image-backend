@@ -1,10 +1,11 @@
 package pl.dockerguardimage.data.entity;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import jakarta.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,10 +22,11 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String notificationId;
 
-    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
     private NotificationType type;
 
     @Column(name = "message")
+    @NotEmpty
     private String message;
 
     @Column(name = "date")

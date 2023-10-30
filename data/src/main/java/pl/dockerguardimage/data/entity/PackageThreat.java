@@ -1,10 +1,11 @@
 package pl.dockerguardimage.data.entity;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import jakarta.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 @Getter
@@ -20,12 +21,15 @@ public class PackageThreat {
     private String id;
 
     @Column(name = "osv_id")
+    @NotEmpty
     private String osvId;
 
     @Column(name = "summary")
+    @NotEmpty
     private String summary;
 
     @Column(name = "details")
+    @NotEmpty
     private String details;
 
     @Column(name = "modified")
@@ -35,9 +39,11 @@ public class PackageThreat {
     private LocalDateTime published;
 
     @Column(name = "severity")
+    @NotEmpty
     private String severity;
 
     @Column(name = "versions")
+    @NotEmpty
     private String versions;
 
     @ManyToOne
