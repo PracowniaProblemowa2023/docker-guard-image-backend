@@ -10,13 +10,13 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "FILE_ACCESS")
+@Table(name = "fileaccess")
 @NoArgsConstructor
 public class FileAccess {
 
     @Id
     @Column(name = "file_access_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String fileAccessId;
 
     @Column(name = "date")

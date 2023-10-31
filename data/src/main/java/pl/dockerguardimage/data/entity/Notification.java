@@ -13,13 +13,13 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "NOTIFICATION")
+@Table(name = "notification")
 @NoArgsConstructor
 public class Notification {
 
     @Id
     @Column(name = "notification_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String notificationId;
 
     @Enumerated(EnumType.STRING)

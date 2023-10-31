@@ -17,7 +17,7 @@ public class SyftPayload {
 
     @Id
     @Column(name = "syft_payload_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String syftPayloadId;
 
     @Column(name = "name")

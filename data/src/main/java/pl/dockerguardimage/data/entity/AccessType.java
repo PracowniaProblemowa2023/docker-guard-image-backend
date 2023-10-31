@@ -10,14 +10,14 @@ import javax.validation.constraints.NotEmpty;
 @Getter
 @Setter
 @Entity
-@Table(name = "ACCESS_TYPE")
+@Table(name = "accesstype")
 @NoArgsConstructor
 public class AccessType {
 
     @Id
     @Column(name = "access_type_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private String accessTypeId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long accessTypeId;
 
     @Column(name = "name")
     @NotEmpty

@@ -12,13 +12,13 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "IMAGE_SCAN")
+@Table(name = "imagescan")
 @NoArgsConstructor
 public class ImageScan {
 
     @Id
     @Column(name = "image_scan_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String imageScanId;
 
     @Column(name = "name")

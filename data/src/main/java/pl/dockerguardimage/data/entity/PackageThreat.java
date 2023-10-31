@@ -11,13 +11,13 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "PACKAGE_THREAT")
+@Table(name = "packagethreat")
 @NoArgsConstructor
 public class PackageThreat {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     @Column(name = "osv_id")

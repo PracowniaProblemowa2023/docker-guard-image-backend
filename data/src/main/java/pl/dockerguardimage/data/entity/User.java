@@ -13,13 +13,13 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "DOCKER_USER'")
+@Table(name = "dockeruser")
 @NoArgsConstructor
 public class User {
 
     @Id
     @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String userId;
 
     @Column(name = "username")
