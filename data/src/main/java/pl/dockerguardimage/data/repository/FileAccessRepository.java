@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import pl.dockerguardimage.data.entity.FileAccess;
 
 @Repository
-public interface FileAccessRepository extends JpaRepository<FileAccess,String> {
+public interface FileAccessRepository extends JpaRepository<FileAccess,Long> {
 }

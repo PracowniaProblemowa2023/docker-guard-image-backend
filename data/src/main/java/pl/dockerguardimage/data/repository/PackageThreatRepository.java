@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import pl.dockerguardimage.data.entity.PackageThreat;
 
 @Repository
-public interface PackageThreatRepository extends JpaRepository<PackageThreat,String> {
+public interface PackageThreatRepository extends JpaRepository<PackageThreat,Long> {
 }

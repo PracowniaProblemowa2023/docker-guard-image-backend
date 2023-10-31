@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import pl.dockerguardimage.data.entity.ImageScan;
 
 @Repository
-public interface ImageScanRepository extends JpaRepository<ImageScan,String> {
+public interface ImageScanRepository extends JpaRepository<ImageScan,Long> {
 }

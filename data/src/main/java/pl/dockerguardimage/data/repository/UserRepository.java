@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import pl.dockerguardimage.data.entity.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User,String> {
+public interface UserRepository extends JpaRepository<User,Long> {
 }

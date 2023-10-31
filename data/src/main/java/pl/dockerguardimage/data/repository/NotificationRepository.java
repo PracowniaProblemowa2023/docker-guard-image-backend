@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import pl.dockerguardimage.data.entity.Notification;
 
 @Repository
-public interface NotificationRepository extends JpaRepository<Notification,String> {
+public interface NotificationRepository extends JpaRepository<Notification,Long> {
 }

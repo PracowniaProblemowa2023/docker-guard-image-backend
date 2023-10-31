@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import pl.dockerguardimage.data.entity.Comment;
 
 @Repository
-public interface CommentRepository extends JpaRepository<Comment,String> {
+public interface CommentRepository extends JpaRepository<Comment,Long> {
 }

@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import pl.dockerguardimage.data.entity.SyftPayload;
 
 @Repository
-public interface SyftPayloadRepository extends JpaRepository<SyftPayload,String> {
+public interface SyftPayloadRepository extends JpaRepository<SyftPayload,Long> {
 }
