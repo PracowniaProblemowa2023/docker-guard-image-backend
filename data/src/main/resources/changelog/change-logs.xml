@@ -1,5 +1,169 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="Dariusz (generated)" id="1698765063780-1">
+        <createTable tableName="accesstype">
+            <column autoIncrement="true" name="access_type_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="accesstype_pkey"/>
+            </column>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Dariusz (generated)" id="1698765063780-2">
+        <createTable tableName="comment">
+            <column autoIncrement="true" name="comment_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="comment_pkey"/>
+            </column>
+            <column name="date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="iamge_scan_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="text" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Dariusz (generated)" id="1698765063780-3">
+        <createTable tableName="dockeruser">
+            <column autoIncrement="true" name="user_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="dockeruser_pkey"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="locale" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="username" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Dariusz (generated)" id="1698765063780-4">
+        <createTable tableName="imagescan">
+            <column name="date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column autoIncrement="true" name="image_scan_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="imagescan_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="url" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Dariusz (generated)" id="1698765063780-5">
+        <createTable tableName="notification">
+            <column name="date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column autoIncrement="true" name="notification_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="notification_pkey"/>
+            </column>
+            <column name="message" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Dariusz (generated)" id="1698765063780-6">
+        <createTable tableName="packagethreat">
+            <column name="modified" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column autoIncrement="true" name="package_threat_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="packagethreat_pkey"/>
+            </column>
+            <column name="published" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="syft_payload_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="details" type="VARCHAR(255)"/>
+            <column name="osv_id" type="VARCHAR(255)"/>
+            <column name="severity" type="VARCHAR(255)"/>
+            <column name="summary" type="VARCHAR(255)"/>
+            <column name="versions" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Dariusz (generated)" id="1698765063780-7">
+        <createTable tableName="syft_payload">
+            <column name="image_scan_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column autoIncrement="true" name="syft_paylaod_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="syft_payload_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="result" type="VARCHAR(255)"/>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Dariusz (generated)" id="1698765063780-8">
+        <createTable tableName="fileaccess">
+            <column name="date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_access_id" type="BIGINT"/>
+            <column name="image_scan_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="fileaccess_pkey"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="fileaccess_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Dariusz (generated)" id="1698765063780-9">
+        <addUniqueConstraint columnNames="file_access_id" constraintName="fileaccess_file_access_id_key" tableName="fileaccess"/>
+    </changeSet>
+    <changeSet author="Dariusz (generated)" id="1698765063780-10">
+        <createTable tableName="notification_user">
+            <column name="notifications_notification_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="notification_user_pkey"/>
+            </column>
+            <column name="users_user_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="notification_user_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Dariusz (generated)" id="1698765063780-11">
+        <addForeignKeyConstraint baseColumnNames="notifications_notification_id" baseTableName="notification_user" constraintName="fk1hnriu16td1wy7abb79ghnu9c" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="notification_id" referencedTableName="notification" validate="true"/>
+    </changeSet>
+    <changeSet author="Dariusz (generated)" id="1698765063780-12">
+        <addForeignKeyConstraint baseColumnNames="users_user_id" baseTableName="notification_user" constraintName="fk3kjiyfso1t4c8a65vaoxkdtau" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="dockeruser" validate="true"/>
+    </changeSet>
+    <changeSet author="Dariusz (generated)" id="1698765063780-13">
+        <addForeignKeyConstraint baseColumnNames="image_scan_id" baseTableName="fileaccess" constraintName="fk8a3c1flp6lf3l5wj7l14vgcy3" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="image_scan_id" referencedTableName="imagescan" validate="true"/>
+    </changeSet>
+    <changeSet author="Dariusz (generated)" id="1698765063780-14">
+        <addForeignKeyConstraint baseColumnNames="image_scan_id" baseTableName="syft_payload" constraintName="fk9lau134yiajs6n8hkelcw8o39" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="image_scan_id" referencedTableName="imagescan" validate="true"/>
+    </changeSet>
+    <changeSet author="Dariusz (generated)" id="1698765063780-15">
+        <addForeignKeyConstraint baseColumnNames="syft_payload_id" baseTableName="packagethreat" constraintName="fkecl2pfwis5tbghir6a9y9ao7y" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="syft_paylaod_id" referencedTableName="syft_payload" validate="true"/>
+    </changeSet>
+    <changeSet author="Dariusz (generated)" id="1698765063780-16">
+        <addForeignKeyConstraint baseColumnNames="iamge_scan_id" baseTableName="comment" constraintName="fkekg9fdhk2giwj4d53gtt24bwm" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="image_scan_id" referencedTableName="imagescan" validate="true"/>
+    </changeSet>
+    <changeSet author="Dariusz (generated)" id="1698765063780-17">
+        <addForeignKeyConstraint baseColumnNames="file_access_id" baseTableName="fileaccess" constraintName="fkowh7pnny4nptoivsskpo70l48" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="access_type_id" referencedTableName="accesstype" validate="true"/>
+    </changeSet>
+    <changeSet author="Dariusz (generated)" id="1698765063780-18">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="fileaccess" constraintName="fkwmfayu7yuya83h579lbm87my" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="dockeruser" validate="true"/>
+    </changeSet>
 </databaseChangeLog>
