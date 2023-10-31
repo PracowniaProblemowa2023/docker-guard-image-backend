@@ -1,6 +1,7 @@
 package pl.dockerguardimage.data.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,15 +16,16 @@ import javax.validation.constraints.NotEmpty;
 public class AccessType {
 
     @Id
-    @Column(name = "access_type_id")
+    @Column(name = "access_type_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long accessTypeId;
+    private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     @NotEmpty
+    @NotNull
     private String name;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     @NotEmpty
     private String description;
 

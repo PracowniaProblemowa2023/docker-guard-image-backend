@@ -18,23 +18,23 @@ import java.util.Set;
 public class User {
 
     @Id
-    @Column(name = "user_id")
+    @Column(name = "user_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String userId;
+    private Long id;
 
-    @Column(name = "username")
+    @Column(name = "username", nullable = false)
     @NotEmpty
     private String username;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     @NotEmpty
     private String password;
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = false)
     @Email
     private String email;
 
-    @Column(name = "locale")
+    @Column(name = "locale", nullable = false)
     @NotEmpty
     private String locale;
 

@@ -17,19 +17,19 @@ import java.util.Set;
 public class ImageScan {
 
     @Id
-    @Column(name = "image_scan_id")
+    @Column(name = "image_scan_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String imageScanId;
+    private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     @NotEmpty
     private String name;
 
-    @Column(name = "url")
+    @Column(name = "url", nullable = false)
     @NotEmpty
     private String url;
 
-    @Column(name = "date")
+    @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
     @OneToMany(mappedBy="imageScan")

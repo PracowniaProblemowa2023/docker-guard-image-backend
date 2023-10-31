@@ -1,5 +1,6 @@
 package pl.dockerguardimage.data.entity;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,24 +15,23 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class FileAccess {
 
-    @Id
-    @Column(name = "file_access_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String fileAccessId;
+    @EmbeddedId
+    private FileAccessId id;
 
-    @Column(name = "date")
+    @Column(name = "date", nullable = false)
+    @NotNull
     private LocalDateTime date;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "file_access_id", referencedColumnName = "access_type_id")
     private AccessType accessType;
 
-    @ManyToOne
-    @JoinColumn(name="user_id", nullable=false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id", nullable=false, insertable=false, updatable=false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name="image_scan_id", nullable=false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="image_scan_id", nullable=false, insertable=false, updatable=false)
     private ImageScan imageScan;
 
 }

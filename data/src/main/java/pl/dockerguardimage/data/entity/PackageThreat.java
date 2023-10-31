@@ -16,9 +16,9 @@ import java.time.LocalDateTime;
 public class PackageThreat {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "package_threat_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     @Column(name = "osv_id")
     @NotEmpty
@@ -46,7 +46,7 @@ public class PackageThreat {
     @NotEmpty
     private String versions;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="syft_payload_id", nullable=false)
     private SyftPayload syftPayload;
 

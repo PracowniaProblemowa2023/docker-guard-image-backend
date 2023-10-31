@@ -16,19 +16,19 @@ import java.util.Set;
 public class SyftPayload {
 
     @Id
-    @Column(name = "syft_payload_id")
+    @Column(name = "syft_paylaod_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String syftPayloadId;
+    private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     @NotEmpty
     private String name;
 
-    @Column(name = "version")
+    @Column(name = "version", nullable = false)
     @NotEmpty
     private String version;
 
-    @Column(name = "type")
+    @Column(name = "type", nullable = false)
     @NotEmpty
     private String type;
 
@@ -39,15 +39,7 @@ public class SyftPayload {
     @OneToMany(mappedBy="syftPayload")
     private Set<PackageThreat> packageThreats;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="image_scan_id", nullable=false)
     private ImageScan imageScan;
-
-
-
-
-
-
-
-
 }

@@ -18,21 +18,21 @@ import java.util.Set;
 public class Notification {
 
     @Id
-    @Column(name = "notification_id")
+    @Column(name = "notification_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String notificationId;
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     private NotificationType type;
 
-    @Column(name = "message")
+    @Column(name = "message", nullable = false)
     @NotEmpty
     private String message;
 
-    @Column(name = "date")
+    @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "notification_user",
             joinColumns = { @JoinColumn(referencedColumnName = "notification_id") },
             inverseJoinColumns = { @JoinColumn(referencedColumnName = "user_id") })
