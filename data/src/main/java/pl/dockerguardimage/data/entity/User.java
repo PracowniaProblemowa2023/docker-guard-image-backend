@@ -41,6 +41,12 @@ public class User {
     @OneToMany(mappedBy="user")
     private Set<FileAccess> fileAccesses;
 
+    @OneToMany(mappedBy="author")
+    private Set<Comment> comments;
+
+    @OneToMany(mappedBy="author")
+    private Set<ImageScan> imageScans;
+
     @ManyToMany(mappedBy = "users")
     private Set<Notification> notifications = new HashSet<>();
 

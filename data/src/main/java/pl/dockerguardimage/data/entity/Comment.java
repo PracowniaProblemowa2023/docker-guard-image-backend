@@ -28,7 +28,11 @@ public class Comment {
     private LocalDateTime date;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="iamge_scan_id", nullable=false)
+    @JoinColumn(name="image_scan_id", nullable=false)
     private ImageScan imageScan;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id", nullable=false)
+    private User author;
 
 }
