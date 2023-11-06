@@ -1,0 +1,20 @@
+<changeSet author="Dariusz (generated)" id="202311061037-8">
+    <createTable tableName="syft_payload">
+        <column name="image_scan_id" type="BIGINT">
+            <constraints nullable="false"/>
+        </column>
+        <column autoIncrement="true" name="syft_paylaod_id" type="BIGINT">
+            <constraints nullable="false" primaryKey="true" primaryKeyName="syft_payload_pkey"/>
+        </column>
+        <column name="name" type="VARCHAR(255)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="result" type="VARCHAR(255)"/>
+        <column name="type" type="VARCHAR(255)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="version" type="VARCHAR(255)">
+            <constraints nullable="false"/>
+        </column>
+    </createTable>
+</changeSet>
