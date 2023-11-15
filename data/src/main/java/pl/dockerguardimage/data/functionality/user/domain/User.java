@@ -31,10 +31,6 @@ public class User implements EntityId<Long> {
     @NotEmpty
     private String username;
 
-    @Column(name = "password", nullable = false)
-    @NotEmpty
-    private String password;
-
     @Column(name = "email", nullable = false)
     @Email
     private String email;
@@ -43,16 +39,16 @@ public class User implements EntityId<Long> {
     @NotEmpty
     private String locale;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<FileAccess> fileAccesses;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     private Set<Comment> comments;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     private Set<ImageScan> imageScans;
 
-    @ManyToMany(mappedBy = "users")
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
     private Set<Notification> notifications = new HashSet<>();
 
 }
