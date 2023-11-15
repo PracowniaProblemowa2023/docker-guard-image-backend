@@ -15,6 +15,12 @@ spring:
     show-sql: true
   liquibase:
     change-log: classpath:changelog/change-logs.xml
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+          issuer-uri: ${KEY_CLOAK_ISSUER_URL}
 
 server:
   port: 8443

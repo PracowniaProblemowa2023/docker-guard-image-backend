@@ -1,10 +1,11 @@
 package pl.dockerguardimage.data.entity;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.dockerguardimage.data.functionality.user.domain.User;
 
-import jakarta.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.util.HashSet;

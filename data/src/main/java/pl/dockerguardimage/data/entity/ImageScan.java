@@ -1,10 +1,11 @@
 package pl.dockerguardimage.data.entity;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.dockerguardimage.data.functionality.user.domain.User;
 
-import jakarta.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -32,16 +33,16 @@ public class ImageScan {
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
-    @OneToMany(mappedBy="imageScan")
+    @OneToMany(mappedBy = "imageScan")
     private Set<SyftPayload> syftPayloads;
 
-    @OneToMany(mappedBy="imageScan")
+    @OneToMany(mappedBy = "imageScan")
     private Set<Comment> comments;
 
-    @OneToMany(mappedBy="imageScan")
+    @OneToMany(mappedBy = "imageScan")
     private Set<FileAccess> fileAccesses;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id", nullable=false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User author;
 }

@@ -1,10 +1,15 @@
-package pl.dockerguardimage.data.entity;
+package pl.dockerguardimage.data.functionality.user.domain;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.dockerguardimage.data.entity.Comment;
+import pl.dockerguardimage.data.entity.FileAccess;
+import pl.dockerguardimage.data.entity.ImageScan;
+import pl.dockerguardimage.data.entity.Notification;
+import pl.dockerguardimage.data.functionality.user.common.domain.EntityId;
 
-import jakarta.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
@@ -15,7 +20,7 @@ import java.util.Set;
 @Entity
 @Table(name = "dockeruser")
 @NoArgsConstructor
-public class User {
+public class User implements EntityId<Long> {
 
     @Id
     @Column(name = "user_id", nullable = false)
@@ -38,13 +43,13 @@ public class User {
     @NotEmpty
     private String locale;
 
-    @OneToMany(mappedBy="user")
+    @OneToMany(mappedBy = "user")
     private Set<FileAccess> fileAccesses;
 
-    @OneToMany(mappedBy="author")
+    @OneToMany(mappedBy = "author")
     private Set<Comment> comments;
 
-    @OneToMany(mappedBy="author")
+    @OneToMany(mappedBy = "author")
     private Set<ImageScan> imageScans;
 
     @ManyToMany(mappedBy = "users")

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+
+    <changeSet author="Dariusz (generated)" id="202311061037-11">
+        <addForeignKeyConstraint baseColumnNames="notifications_notification_id"
+                                 constraintName="notification_user_notification_id" baseTableName="notification_user"
+                                 deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="notification_id" referencedTableName="notification"
+                                 validate="true"/>
+    </changeSet>
+
+    <changeSet author="Dariusz (generated)" id="202311061037-12">
+        <addForeignKeyConstraint baseColumnNames="users_user_id" baseTableName="notification_user"
+                                 constraintName="notification_user_user_id" deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id"
+                                 referencedTableName="dockeruser" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Dariusz (generated)" id="202311061037-13">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="comment" constraintName="comment_user_id"
+                                 deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="user_id" referencedTableName="dockeruser" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Dariusz (generated)" id="202311061037-14">
+        <addForeignKeyConstraint baseColumnNames="image_scan_id" baseTableName="fileaccess"
+                                 constraintName="fileaccess_image_scan_id" deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="image_scan_id"
+                                 referencedTableName="imagescan" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Dariusz (generated)" id="202311061037-15">
+        <addForeignKeyConstraint baseColumnNames="image_scan_id" baseTableName="syft_payload"
+                                 constraintName="syft_payload_image_scan_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="image_scan_id" referencedTableName="imagescan" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Dariusz (generated)" id="202311061037-16">
+        <addForeignKeyConstraint baseColumnNames="syft_payload_id" baseTableName="packagethreat"
+                                 constraintName="packagethreat_syft_payload_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="syft_paylaod_id" referencedTableName="syft_payload"
+                                 validate="true"/>
+    </changeSet>
+
+    <changeSet author="Dariusz (generated)" id="202311061037-17">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="imagescan" constraintName="imagescan_user_id"
+                                 deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="user_id" referencedTableName="dockeruser" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Dariusz (generated)" id="202311061037-18">
+        <addForeignKeyConstraint baseColumnNames="file_access_id" baseTableName="fileaccess"
+                                 constraintName="fileaccess_file_access_id" deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="access_type_id"
+                                 referencedTableName="accesstype" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Dariusz (generated)" id="202311061037-19">
+        <addForeignKeyConstraint baseColumnNames="image_scan_id" baseTableName="comment"
+                                 constraintName="comment_image_scan_id" deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="image_scan_id"
+                                 referencedTableName="imagescan" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Dariusz (generated)" id="202311061037-20">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="fileaccess"
+                                 constraintName="fileaccess_user_id" deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id"
+                                 referencedTableName="dockeruser" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Dariusz (generated)" id="202311061037-9">
+        <addUniqueConstraint columnNames="file_access_id" constraintName="fileaccess_file_access_id_key"
+                             tableName="fileaccess"/>
+    </changeSet>
+
+</databaseChangeLog>

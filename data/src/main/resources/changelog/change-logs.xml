@@ -1,77 +1,17 @@
-<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
 
-    <include file="changelog/change-set/create_accesstype_202311061037.xml" />
-
-    <include file="changelog/change-set/create_comment_202311061037.xml" />
-
-    <include file="changelog/change-set/create_dockeruser_202311061037.xml" />
-
-    <include file="changelog/change-set/create_fileaccess_202311061037.xml" />
-
-    <include file="changelog/change-set/create_imagescan_202311061037.xml" />
-
-    <include file="changelog/change-set/create_notification_202311061037.xml" />
-
-    <include file="changelog/change-set/create_packagethreat_202311061037.xml" />
-
-    <include file="changelog/change-set/create_syft_payload_202311061037.xml" />
-
-    <changeSet author="Dariusz (generated)" id="202311061037-9">
-        <addUniqueConstraint columnNames="file_access_id" constraintName="fileaccess_file_access_id_key" tableName="fileaccess"/>
-    </changeSet>
-
-    <changeSet author="Dariusz (generated)" id="202311061037-10">
-        <createTable tableName="notification_user">
-            <column name="notifications_notification_id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="notification_user_pkey"/>
-            </column>
-            <column name="users_user_id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="notification_user_pkey"/>
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet author="Dariusz (generated)" id="202311061037-11">
-        <addForeignKeyConstraint baseColumnNames="notifications_notification_id" baseTableName="notification_user_notification_id" constraintName="notification_user" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="notification_id" referencedTableName="notification" validate="true"/>
-    </changeSet>
-
-    <changeSet author="Dariusz (generated)" id="202311061037-12">
-        <addForeignKeyConstraint baseColumnNames="users_user_id" baseTableName="notification_user" constraintName="notification_user_user_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="dockeruser" validate="true"/>
-    </changeSet>
-
-    <changeSet author="Dariusz (generated)" id="202311061037-13">
-        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="comment" constraintName="comment_user_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="dockeruser" validate="true"/>
-    </changeSet>
-
-    <changeSet author="Dariusz (generated)" id="202311061037-14">
-        <addForeignKeyConstraint baseColumnNames="image_scan_id" baseTableName="fileaccess" constraintName="fileaccess_image_scan_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="image_scan_id" referencedTableName="imagescan" validate="true"/>
-    </changeSet>
-
-    <changeSet author="Dariusz (generated)" id="202311061037-15">
-        <addForeignKeyConstraint baseColumnNames="image_scan_id" baseTableName="syft_payload" constraintName="syft_payload_image_scan_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="image_scan_id" referencedTableName="imagescan" validate="true"/>
-    </changeSet>
-
-    <changeSet author="Dariusz (generated)" id="202311061037-16">
-        <addForeignKeyConstraint baseColumnNames="syft_payload_id" baseTableName="packagethreat" constraintName="packagethreat_syft_payload_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="syft_paylaod_id" referencedTableName="syft_payload" validate="true"/>
-    </changeSet>
-
-    <changeSet author="Dariusz (generated)" id="202311061037-17">
-        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="imagescan" constraintName="imagescan_user_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="dockeruser" validate="true"/>
-    </changeSet>
-
-    <changeSet author="Dariusz (generated)" id="202311061037-18">
-        <addForeignKeyConstraint baseColumnNames="file_access_id" baseTableName="fileaccess" constraintName="fileaccess_file_access_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="access_type_id" referencedTableName="accesstype" validate="true"/>
-    </changeSet>
-
-    <changeSet author="Dariusz (generated)" id="202311061037-19">
-        <addForeignKeyConstraint baseColumnNames="image_scan_id" baseTableName="comment" constraintName="comment_image_scan_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="image_scan_id" referencedTableName="imagescan" validate="true"/>
-    </changeSet>
-
-    <changeSet author="Dariusz (generated)" id="202311061037-20">
-        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="fileaccess" constraintName="fileaccess_user_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="dockeruser" validate="true"/>
-    </changeSet>
+    <include file="change-set/202311061037_create_accesstype.xml" relativeToChangelogFile="true"/>
+    <include file="change-set/202311061038_create_comment.xml" relativeToChangelogFile="true"/>
+    <include file="change-set/202311061039_create_dockeruser.xml" relativeToChangelogFile="true"/>
+    <include file="change-set/202311061040_create_fileaccess.xml" relativeToChangelogFile="true"/>
+    <include file="change-set/202311061041_create_imagescan.xml" relativeToChangelogFile="true"/>
+    <include file="change-set/202311061042_create_notification.xml" relativeToChangelogFile="true"/>
+    <include file="change-set/202311061043_create_packagethreat.xml" relativeToChangelogFile="true"/>
+    <include file="change-set/202311061044_create_syft_payload.xml" relativeToChangelogFile="true"/>
+    <include file="change-set/202311152043_move_foregin_key_changeset_to_file.xml" relativeToChangelogFile="true"/>
+    <include file="change-set/202311152042_add_notification_user_table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
