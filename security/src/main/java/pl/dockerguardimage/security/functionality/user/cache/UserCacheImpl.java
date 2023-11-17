@@ -12,7 +12,7 @@ class UserCacheImpl implements UserCache {
 
     @Override
     public Set<String> putAndGetUserRole(AuthenticatedUser user, String session) {
-        userRoleByUsername.put(user.username(), new UserRole(session, user.roles()));
+        userRoleByUsername.put(user.username(), new UserRole(session, user));
         return user.roles();
     }
 
@@ -28,10 +28,15 @@ class UserCacheImpl implements UserCache {
             return Optional.empty();
         }
 
-        return Optional.of(userRole.roles);
+        return Optional.of(userRole.authenticatedUser().roles());
     }
 
-    private record UserRole(String sessionId, Set<String> roles) {
+    @Override
+    public AuthenticatedUser getAuthenticatedUser(String username) {
+        return userRoleByUsername.get(username).authenticatedUser;
+    }
+
+    private record UserRole(String sessionId, AuthenticatedUser authenticatedUser) {
     }
 
 }

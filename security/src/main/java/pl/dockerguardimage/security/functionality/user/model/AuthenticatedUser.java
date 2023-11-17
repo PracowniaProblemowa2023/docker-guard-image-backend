@@ -5,6 +5,7 @@ import lombok.Builder;
 import java.util.Set;
 
 @Builder
-public record AuthenticatedUser(String username, Set<String> roles) {
+public record AuthenticatedUser(Long id, String username, String firstname, String lastname, String email,
+                                Set<String> roles) {
 
 }

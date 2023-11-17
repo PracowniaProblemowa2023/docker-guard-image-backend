@@ -2,17 +2,18 @@ package pl.dockerguardimage.security.functionality.user.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.dockerguardimage.data.functionality.role.domain.Role;
 import pl.dockerguardimage.data.functionality.role.service.RoleQueryService;
 import pl.dockerguardimage.data.functionality.user.domain.User;
 import pl.dockerguardimage.data.functionality.user.service.UserCudService;
 import pl.dockerguardimage.security.functionality.role.helper.RoleHelper;
+import pl.dockerguardimage.security.functionality.user.mapper.UserToAuthenticatedUserMapper;
 import pl.dockerguardimage.security.functionality.user.model.AuthenticatedUser;
 
 import java.util.Collections;
-import java.util.stream.Collectors;
 
+@Service
 @Transactional
 @AllArgsConstructor
 public class UserCreateServiceImpl implements UserCreateService {
@@ -21,7 +22,7 @@ public class UserCreateServiceImpl implements UserCreateService {
     private final RoleQueryService roleQueryService;
 
     @Override
-    public AuthenticatedUser createUser(Jwt jwt) {
+    public AuthenticatedUser create(Jwt jwt) {
         var username = jwt.getClaim("preferred_username").toString();
         var name = jwt.getClaim("given_name").toString();
         var lastName = jwt.getClaim("family_name").toString();
@@ -36,14 +37,8 @@ public class UserCreateServiceImpl implements UserCreateService {
         user.addRoles(roles);
         var created = userCudService.create(user);
 
-        var userRoles = created.getRoles().stream()
-                .map(Role::getName)
-                .collect(Collectors.toSet());
-
-        return AuthenticatedUser.builder()
-                .username(created.getUsername())
-                .roles(userRoles)
-                .build();
+        return UserToAuthenticatedUserMapper.mapToAuthenticatedUser(created);
     }
+
 
 }
