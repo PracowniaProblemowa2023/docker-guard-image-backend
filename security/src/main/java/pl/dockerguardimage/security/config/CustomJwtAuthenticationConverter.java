@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import pl.dockerguardimage.data.functionality.role.domain.Role;
 import pl.dockerguardimage.data.functionality.user.service.UserQueryService;
 import pl.dockerguardimage.security.functionality.user.cache.UserCache;
+import pl.dockerguardimage.security.functionality.user.mapper.UserToAuthenticatedUserMapper;
 import pl.dockerguardimage.security.functionality.user.service.UserCreateService;
 
 import java.util.Collection;
@@ -28,7 +29,6 @@ class CustomJwtAuthenticationConverter implements Converter<Jwt, Collection<Gran
         var username = jwt.getClaim("preferred_username").toString();
         var sessionState = jwt.getClaim("session_state").toString();
 
-
         var roles = userCache.getRolesByUsername(username, sessionState);
         if (roles.isPresent()) {
             return getGrantedAuthorities(roles.get());
@@ -36,10 +36,11 @@ class CustomJwtAuthenticationConverter implements Converter<Jwt, Collection<Gran
 
         var userOpt = userQueryService.getOptByUsername(username);
         if (userOpt.isEmpty()) {
-            var user = userCreateService.createUser(jwt);
+            var user = userCreateService.create(jwt);
             return getGrantedAuthorities(userCache.putAndGetUserRole(user, sessionState));
         }
 
+        userCache.putAndGetUserRole(UserToAuthenticatedUserMapper.mapToAuthenticatedUser(userOpt.get()), sessionState);
         var userRoles = userOpt.get()
                 .getRoles()
                 .stream()
