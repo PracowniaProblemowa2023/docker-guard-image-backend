@@ -8,7 +8,8 @@ import pl.dockerguardimage.data.entity.Comment;
 import pl.dockerguardimage.data.entity.FileAccess;
 import pl.dockerguardimage.data.entity.ImageScan;
 import pl.dockerguardimage.data.entity.Notification;
-import pl.dockerguardimage.data.functionality.user.common.domain.EntityId;
+import pl.dockerguardimage.data.functionality.common.domain.EntityId;
+import pl.dockerguardimage.data.functionality.role.domain.Role;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -31,13 +32,21 @@ public class User implements EntityId<Long> {
     @NotEmpty
     private String username;
 
+    @Column(name = "firstname", nullable = false)
+    @NotEmpty
+    private String firstname;
+
+    @Column(name = "lastname", nullable = false)
+    @NotEmpty
+    private String lastname;
+
     @Column(name = "email", nullable = false)
     @Email
     private String email;
 
     @Column(name = "locale", nullable = false)
     @NotEmpty
-    private String locale;
+    private String locale = "pl_PL";
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<FileAccess> fileAccesses;
@@ -51,4 +60,20 @@ public class User implements EntityId<Long> {
     @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
     private Set<Notification> notifications = new HashSet<>();
 
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinTable(
+            name = "dockeruser_role",
+            joinColumns = @JoinColumn(name = "dockeruser_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
+
+    public void addRoles(Set<Role> roles) {
+        roles.forEach(this::addRole);
+    }
+
+    public void addRole(Role role) {
+        getRoles().add(role);
+        role.getUsers().add(this);
+    }
 }

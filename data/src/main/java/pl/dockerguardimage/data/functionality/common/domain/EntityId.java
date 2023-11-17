@@ -1,4 +1,4 @@
-package pl.dockerguardimage.data.functionality.user.common.domain;
+package pl.dockerguardimage.data.functionality.common.domain;
 
 import java.util.Objects;
 

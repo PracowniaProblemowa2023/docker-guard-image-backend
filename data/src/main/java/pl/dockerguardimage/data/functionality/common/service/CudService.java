@@ -1,6 +1,6 @@
-package pl.dockerguardimage.data.functionality.user.common.service;
+package pl.dockerguardimage.data.functionality.common.service;
 
-import pl.dockerguardimage.data.functionality.user.common.domain.EntityId;
+import pl.dockerguardimage.data.functionality.common.domain.EntityId;
 
 import java.util.Collection;
 import java.util.Set;
