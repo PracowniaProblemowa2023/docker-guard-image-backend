@@ -23,5 +23,4 @@ public class ApiConfiguration {
         localValidatorFactoryBean.setValidationMessageSource(apiMessageSource());
         return localValidatorFactoryBean;
     }
-
 }
