@@ -1,9 +1,9 @@
-package pl.dockerguardimage.data.functionality.user.common.service;
+package pl.dockerguardimage.data.functionality.common.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.dockerguardimage.data.functionality.user.common.domain.EntityId;
+import pl.dockerguardimage.data.functionality.common.domain.EntityId;
 
 import java.util.Collection;
 import java.util.HashSet;

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <changeSet id="202311171420-1" author="faronnor">
+        <createTable tableName="role">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="202311171420-2" author="faronnor">
+        <createTable tableName="dockeruser_role">
+            <column name="dockeruser_id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="role_id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="dockeruser_role" baseColumnNames="dockeruser_id"
+                                 constraintName="fk_dockeruser_role_dockeruser_id_fk" referencedTableName="dockeruser"
+                                 referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint baseTableName="dockeruser_role" baseColumnNames="role_id"
+                                 constraintName="fk_dockeruser_role_role_id_fk" referencedTableName="role"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="202311171420-3" author="faronnor">
+        <sql>
+            INSERT INTO role(name)
+            VALUES ('ROLE_DEFAULT'),
+                   ('ROLE_ADMIN')
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
