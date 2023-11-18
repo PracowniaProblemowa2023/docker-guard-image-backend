@@ -1,19 +1,22 @@
-package pl.dockerguardimage.data.entity;
+package pl.dockerguardimage.data.functionality.syft.domain;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.dockerguardimage.data.entity.PackageThreat;
+import pl.dockerguardimage.data.functionality.common.domain.EntityId;
+import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
 
-import jakarta.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "SYFT_PAYLOAD")
+@Table(name = "syftpayload")
 @NoArgsConstructor
-public class SyftPayload {
+public class SyftPayload implements EntityId<Long> {
 
     @Id
     @Column(name = "syft_paylaod_id", nullable = false)
@@ -32,14 +35,10 @@ public class SyftPayload {
     @NotEmpty
     private String type;
 
-    @Enumerated(EnumType.STRING)
-    @NotEmpty
-    private Result result;
-
-    @OneToMany(mappedBy="syftPayload")
+    @OneToMany(mappedBy = "syftPayload")
     private Set<PackageThreat> packageThreats;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="image_scan_id", nullable=false)
+    @JoinColumn(name = "image_scan_id", nullable = false)
     private ImageScan imageScan;
 }

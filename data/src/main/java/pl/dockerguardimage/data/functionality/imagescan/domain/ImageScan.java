@@ -1,9 +1,13 @@
-package pl.dockerguardimage.data.entity;
+package pl.dockerguardimage.data.functionality.imagescan.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.dockerguardimage.data.entity.Comment;
+import pl.dockerguardimage.data.entity.FileAccess;
+import pl.dockerguardimage.data.functionality.common.domain.EntityId;
+import pl.dockerguardimage.data.functionality.syft.domain.SyftPayload;
 import pl.dockerguardimage.data.functionality.user.domain.User;
 
 import javax.validation.constraints.NotEmpty;
@@ -15,7 +19,7 @@ import java.util.Set;
 @Entity
 @Table(name = "imagescan")
 @NoArgsConstructor
-public class ImageScan {
+public class ImageScan implements EntityId<Long> {
 
     @Id
     @Column(name = "image_scan_id", nullable = false)
@@ -26,12 +30,19 @@ public class ImageScan {
     @NotEmpty
     private String name;
 
-    @Column(name = "url", nullable = false)
+    @Column(name = "image_name", nullable = false)
     @NotEmpty
-    private String url;
+    private String imageName;
 
     @Column(name = "date", nullable = false)
-    private LocalDateTime date;
+    private LocalDateTime date = LocalDateTime.now();
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    @NotEmpty
+    private Result result = Result.STARTED;
+
+    private String errorMsg;
 
     @OneToMany(mappedBy = "imageScan")
     private Set<SyftPayload> syftPayloads;
