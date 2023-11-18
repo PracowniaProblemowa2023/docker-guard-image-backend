@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <changeSet id="202311181144-1" author="faronnor">
+        <renameTable oldTableName="SYFT_PAYLOAD" newTableName="syftpayload"/>
+        <dropColumn tableName="syftpayload" columnName="result"/>
+        <addColumn tableName="imagescan">
+            <column name="result" type="VARCHAR(255)"/>
+            <column name="error_msg" type="VARCHAR"/>
+        </addColumn>
+        <renameColumn tableName="imagescan" oldColumnName="url" newColumnName="image_name"/>
+    </changeSet>
+
+</databaseChangeLog>
