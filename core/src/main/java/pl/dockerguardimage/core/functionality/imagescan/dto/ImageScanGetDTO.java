@@ -1,5 +1,8 @@
 package pl.dockerguardimage.core.functionality.imagescan.dto;
 
-public record ImageScanGetDTO(String id, String name, String image, String result) {
+import lombok.Builder;
+
+@Builder
+public record ImageScanGetDTO(Long id, String name, String image, String result) {
 
 }

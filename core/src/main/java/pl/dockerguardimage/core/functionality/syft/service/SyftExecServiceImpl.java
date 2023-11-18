@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.dockerguardimage.core.functionality.common.properties.SyftProperties;
 import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
-import pl.dockerguardimage.data.functionality.imagescan.domain.Result;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,15 +22,16 @@ class SyftExecServiceImpl implements SyftExecService {
     private static final SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss:SSS");
 
     @Override
-    public void execute(String imageName, ImageScan imageScan) {
-        var command = buildCommand(imageName, imageScan.getId());
+    public void execute(ImageScan imageScan) {
+        var command = buildCommand(imageScan.getImageName(), imageScan.getId());
         int exitCode;
         try {
             var process = Runtime.getRuntime().exec(command);
             saveErrorIfExist(process.getErrorStream(), imageScan);
             exitCode = process.waitFor();
         } catch (InterruptedException | IOException e) {
-            setError(imageScan, "Cannot process command: " + command + "\n" + e.getMessage());
+            var errorMsg = "Cannot process command: " + command + "\n" + e.getMessage();
+            imageScan.setErrorMsg(errorMsg);
             return;
         }
 
@@ -49,16 +49,11 @@ class SyftExecServiceImpl implements SyftExecService {
             while (scanner.hasNextLine()) {
                 synchronized (this) {
                     var errorMsg = format.format(new Date()) + " ERROR: " + scanner.nextLine();
-                    setError(imageScan, errorMsg);
+                    imageScan.setErrorMsg(errorMsg);
                 }
             }
             scanner.close();
         }).start();
-    }
-
-    private static void setError(ImageScan imageScan, String errorMsg) {
-        imageScan.setErrorMsg(errorMsg);
-        imageScan.setResult(Result.ERROR);
     }
 
     private String buildCommand(String imageName, Long imageScanId) {

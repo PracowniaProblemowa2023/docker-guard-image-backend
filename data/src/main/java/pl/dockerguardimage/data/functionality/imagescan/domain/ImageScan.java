@@ -12,6 +12,7 @@ import pl.dockerguardimage.data.functionality.user.domain.User;
 
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -45,15 +46,25 @@ public class ImageScan implements EntityId<Long> {
     private String errorMsg;
 
     @OneToMany(mappedBy = "imageScan")
-    private Set<SyftPayload> syftPayloads;
+    private Set<SyftPayload> syftPayloads = new HashSet<>();
 
     @OneToMany(mappedBy = "imageScan")
     private Set<Comment> comments;
 
     @OneToMany(mappedBy = "imageScan")
-    private Set<FileAccess> fileAccesses;
+    private Set<FileAccess> fileAccesses = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User author;
+
+    public void setErrorMsg(String errorMsg) {
+        this.result = Result.ERROR;
+        this.errorMsg = errorMsg;
+    }
+
+    public void addSyftPayload(SyftPayload syftPayload) {
+        getSyftPayloads().add(syftPayload);
+        syftPayload.setImageScan(this);
+    }
 }

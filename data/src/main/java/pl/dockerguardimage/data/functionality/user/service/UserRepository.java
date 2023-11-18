@@ -12,4 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u left join fetch u.roles")
     Optional<User> findOptByUsername(String toLowerCase);
+
+    @Query("select u from User u")
+    User findByUsername(String toLowerCase);
 }

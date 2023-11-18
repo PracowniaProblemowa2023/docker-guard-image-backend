@@ -9,6 +9,7 @@ import pl.dockerguardimage.data.functionality.common.domain.EntityId;
 import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -36,7 +37,7 @@ public class SyftPayload implements EntityId<Long> {
     private String type;
 
     @OneToMany(mappedBy = "syftPayload")
-    private Set<PackageThreat> packageThreats;
+    private Set<PackageThreat> packageThreats = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_scan_id", nullable = false)

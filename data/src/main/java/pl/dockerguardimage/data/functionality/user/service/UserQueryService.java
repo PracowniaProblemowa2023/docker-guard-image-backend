@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface UserQueryService {
     Optional<User> getOptByUsername(String username);
+
+    User getByUsername(String username);
 }
