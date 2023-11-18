@@ -6,4 +6,6 @@ import java.util.Optional;
 
 public interface ImageScanQueryService {
     Optional<ImageScan> getOptByName(String name);
+
+    ImageScan getById(Long imageScanId);
 }

@@ -19,4 +19,9 @@ class UserQueryServiceImpl implements UserQueryService {
         return userRepository.findOptByUsername(username.toLowerCase());
     }
 
+    @Override
+    public User getByUsername(String username) {
+        return userRepository.findByUsername(username.toLowerCase());
+    }
+
 }

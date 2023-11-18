@@ -1,5 +1,6 @@
 package pl.dockerguardimage.data.functionality.imagescan.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,12 @@ class ImageScanQueryServiceImpl implements ImageScanQueryService {
 
     @Override
     public Optional<ImageScan> getOptByName(String name) {
-        return Optional.empty();
+        return repository.findOptByName(name);
+    }
+
+    @Override
+    public ImageScan getById(Long imageScanId) {
+        return repository.findById(imageScanId)
+                .orElseThrow(EntityNotFoundException::new);
     }
 }

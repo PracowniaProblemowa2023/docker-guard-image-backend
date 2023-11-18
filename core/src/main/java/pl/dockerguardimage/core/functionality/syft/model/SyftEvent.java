@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SyftEventListener {
+public class SyftEvent {
 
     private Long imageScanId;
 
