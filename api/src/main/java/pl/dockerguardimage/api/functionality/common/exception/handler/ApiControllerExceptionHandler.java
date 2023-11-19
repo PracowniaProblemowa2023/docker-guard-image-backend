@@ -3,8 +3,10 @@ package pl.dockerguardimage.api.functionality.common.exception.handler;
 import jakarta.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -13,6 +15,7 @@ import pl.dockerguardimage.api.functionality.common.exception.response.ErrorMess
 
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -26,7 +29,7 @@ public class ApiControllerExceptionHandler {
     public ErrorMessage handleMethodArgumentNotValidException(MethodArgumentNotValidException e, Locale locale) {
         var errors = new HashSet<ErrorMessage.Error>();
         for (var error : e.getAllErrors()) {
-            var errorMessage = apiMessageSource.getMessage(error, locale);
+            var errorMessage = getErrorMessage(locale, error);
             if (error instanceof FieldError) {
                 errors.add(new ErrorMessage.Error(((FieldError) error).getField(), errorMessage));
                 continue;
@@ -36,6 +39,18 @@ public class ApiControllerExceptionHandler {
         }
 
         return new ErrorMessage(HttpStatus.BAD_REQUEST.value(), apiMessageSource.getMessage("common.validationErrorTitle", null, locale), errors);
+    }
+
+    private String getErrorMessage(Locale locale, ObjectError error) {
+        try {
+            if (Objects.isNull(error.getDefaultMessage())) {
+                return apiMessageSource.getMessage(error, locale);
+            }
+
+            return apiMessageSource.getMessage(Objects.requireNonNull(error.getDefaultMessage()), null, locale);
+        } catch (NoSuchMessageException ex) {
+            return apiMessageSource.getMessage(error, locale);
+        }
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

@@ -23,6 +23,13 @@ public abstract class CudServiceImpl<R extends JpaRepository<E, ID>, E extends E
     }
 
     @Override
+    public E createAndFlush(E entity) {
+        E created = repository.saveAndFlush(entity);
+        log.info("Object {} with id = {} created successfully", created.getEntityName(), created.getId());
+        return created;
+    }
+
+    @Override
     public Set<E> createAll(Collection<E> entities) {
         entities.forEach(this::create);
         return new HashSet<>(entities);

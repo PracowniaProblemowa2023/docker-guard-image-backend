@@ -9,6 +9,8 @@ public interface CudService<E extends EntityId<ID>, ID> {
 
     E create(E entity);
 
+    E createAndFlush(E entity);
+
     Set<E> createAll(Collection<E> entities);
 
     E update(E entity);
