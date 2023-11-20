@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.dockerguardimage.data.entity.PackageThreat;
+import pl.dockerguardimage.data.functionality.packagethreat.domain.PackageThreat;
 import pl.dockerguardimage.data.functionality.common.domain.EntityId;
 import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
 
@@ -42,4 +42,12 @@ public class SyftPayload implements EntityId<Long> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_scan_id", nullable = false)
     private ImageScan imageScan;
+
+    public void addPackageThreat(PackageThreat packageThreat) {
+        getPackageThreats().add(packageThreat);
+        packageThreat.setSyftPayload(this);
+    }
+
 }
+
+

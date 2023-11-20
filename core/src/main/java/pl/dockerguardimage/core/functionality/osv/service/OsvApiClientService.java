@@ -1,9 +1,9 @@
-package pl.dockerguardimage.core.osv;
+package pl.dockerguardimage.core.functionality.osv.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Component;
-import pl.dockerguardimage.core.osv.dto.request.OsvApiRequest;
-import pl.dockerguardimage.core.osv.dto.response.OsvApiResponse;
+import org.springframework.stereotype.Service;
+import pl.dockerguardimage.core.functionality.osv.model.OsvApiRequest;
+import pl.dockerguardimage.core.functionality.osv.model.OsvApiResponse;
 
 import java.io.IOException;
 import java.net.URI;
@@ -11,8 +11,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-@Component
-public class OsvApiClient {
+@Service
+public class OsvApiClientService {
 
     ObjectMapper mapper = new ObjectMapper();
 

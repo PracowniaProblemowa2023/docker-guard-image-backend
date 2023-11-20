@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pl.dockerguardimage.core.functionality.imagescan.dto.ImageScanCreateDTO;
 import pl.dockerguardimage.core.functionality.imagescan.dto.ImageScanGetDTO;
+import pl.dockerguardimage.core.functionality.osv.model.OsvEvent;
 import pl.dockerguardimage.core.functionality.syft.model.SyftEvent;
 import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
 import pl.dockerguardimage.data.functionality.imagescan.service.ImageScanCudService;
@@ -33,6 +34,7 @@ class ImageScanCreateServiceImpl implements ImageScanCreateService {
         imageScan.setName(name);
         var created = imageScanCudService.create(imageScan);
         applicationEventPublisher.publishEvent(new SyftEvent(imageScan.getId()));
+        applicationEventPublisher.publishEvent(new OsvEvent(imageScan.getId()));
         return ImageScanGetDTO.builder()
                 .id(created.getId())
                 .name(created.getName())
