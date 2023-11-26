@@ -21,6 +21,7 @@
 		<module>core</module>
 		<module>data</module>
 		<module>api</module>
+		<module>security</module>
 	</modules>
 
 	<dependencyManagement>
