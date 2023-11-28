@@ -1,1 +1,39 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      schema: ${DB_SCHEMA}
+    url: ${DB_URL}
+    username: ${DB_LOGIN}
+    password: ${DB_PASSWORD}
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database: postgresql
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  liquibase:
+    change-log: classpath:changelog/change-logs.xml
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+          issuer-uri: ${KEY_CLOAK_ISSUER_URL}
+springdoc:
+  swagger-ui:
+    path: /docs
+    default-model-rendering: example
+    validator-url: none
+    operations-sorter: alpha
+    tags-sorter: alpha
+    enabled: true
+  api-docs:
+    enabled: true
+server:
+  port: 8443
 
+syft:
+  directory: C:\syft\syft-%d.txt
+  command: cmd /c syft %s --scope all-layers > %s
