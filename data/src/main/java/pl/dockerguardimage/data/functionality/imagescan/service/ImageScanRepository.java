@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
+import pl.dockerguardimage.data.functionality.imagescan.domain.Result;
 
 import java.util.Optional;
 
@@ -13,4 +14,7 @@ public interface ImageScanRepository extends JpaRepository<ImageScan, Long> {
 
     @Query("select is from ImageScan is where is.name = :name")
     Optional<ImageScan> findOptByName(@Param("name") String name);
+
+    @Query("select is from ImageScan is where is.result = :result")
+    Iterable<ImageScan> findByResult(@Param("result") Result result);
 }

@@ -1,4 +1,4 @@
-package pl.dockerguardimage.core.functionality.osv.model;
+package pl.dockerguardimage.core.functionality.packagethreat.osv.model;
 
 public class OsvApiMapperService {
 

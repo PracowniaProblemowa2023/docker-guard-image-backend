@@ -1,4 +1,4 @@
-package pl.dockerguardimage.core.functionality.cve.model;
+package pl.dockerguardimage.core.functionality.packagethreat.cve.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

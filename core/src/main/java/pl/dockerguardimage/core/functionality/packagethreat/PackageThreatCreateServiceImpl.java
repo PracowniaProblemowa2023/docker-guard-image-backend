@@ -1,16 +1,20 @@
-package pl.dockerguardimage.core.functionality.osv.service;
+package pl.dockerguardimage.core.functionality.packagethreat;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.dockerguardimage.core.functionality.cve.model.CveApiMapperService;
-import pl.dockerguardimage.core.functionality.cve.model.CveApiRequest;
-import pl.dockerguardimage.core.functionality.cve.model.CveApiResponse;
-import pl.dockerguardimage.core.functionality.cve.service.CveApiClientService;
-import pl.dockerguardimage.core.functionality.osv.model.OsvApiMapperService;
-import pl.dockerguardimage.core.functionality.osv.model.OsvApiRequest;
-import pl.dockerguardimage.core.functionality.osv.model.OsvApiResponse;
+import pl.dockerguardimage.core.functionality.packagethreat.cve.model.CveApiMapperService;
+import pl.dockerguardimage.core.functionality.packagethreat.cve.model.CveApiRequest;
+import pl.dockerguardimage.core.functionality.packagethreat.cve.model.CveApiResponse;
+import pl.dockerguardimage.core.functionality.packagethreat.cve.service.CveApiClientService;
+import pl.dockerguardimage.core.functionality.packagethreat.osv.model.OsvApiMapperService;
+import pl.dockerguardimage.core.functionality.packagethreat.osv.model.OsvApiRequest;
+import pl.dockerguardimage.core.functionality.packagethreat.osv.model.OsvApiResponse;
+import pl.dockerguardimage.core.functionality.packagethreat.osv.service.OsvApiClientService;
 import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
+import pl.dockerguardimage.data.functionality.imagescan.domain.Result;
+import pl.dockerguardimage.data.functionality.imagescan.service.ImageScanCudService;
+import pl.dockerguardimage.data.functionality.imagescan.service.ImageScanQueryService;
 import pl.dockerguardimage.data.functionality.packagethreatcve.domain.PackageThreatCve;
 import pl.dockerguardimage.data.functionality.packagethreatosv.domain.PackageThreatOsv;
 import pl.dockerguardimage.data.functionality.syft.domain.SyftPayload;
@@ -29,6 +33,26 @@ public class PackageThreatCreateServiceImpl implements PackageThreatService {
     private final OsvApiClientService osvApiClientService;
     private final CveApiClientService cveApiClientService;
     private final SyftPayloadCudService syftPayloadCudService;
+    private final ImageScanQueryService imageScanQueryService;
+    private final ImageScanCudService imageScanCudService;
+
+    @Override
+    public void scanImageScanInProgressJob() {
+
+        Iterable<ImageScan> imageScans = imageScanQueryService.getByResult(Result.PROGRESS);
+
+        imageScans.forEach(imageScan -> {
+            try {
+                this.createAllByImageScanOsv(imageScan);
+                this.createAllByImageScanCve(imageScan);
+                imageScan.setResult(Result.FINISHED);
+                imageScanCudService.update(imageScan);
+
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
 
     @Override
     public void createAllByImageScanOsv(ImageScan imageScan) throws IOException, InterruptedException {

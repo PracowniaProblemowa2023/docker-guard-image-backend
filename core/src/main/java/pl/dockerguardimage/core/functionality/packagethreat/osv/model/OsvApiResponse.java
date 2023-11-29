@@ -1,4 +1,4 @@
-package pl.dockerguardimage.core.functionality.osv.model;
+package pl.dockerguardimage.core.functionality.packagethreat.osv.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

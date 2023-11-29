@@ -1,4 +1,4 @@
-package pl.dockerguardimage.core.functionality.cve.model;
+package pl.dockerguardimage.core.functionality.packagethreat.cve.model;
 
 public class CveApiMapperService {
 

@@ -1,10 +1,12 @@
-package pl.dockerguardimage.core.functionality.osv.service;
+package pl.dockerguardimage.core.functionality.packagethreat;
 
 import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
 
 import java.io.IOException;
 
 public interface PackageThreatService {
+
+     void scanImageScanInProgressJob();
 
      void createAllByImageScanOsv(ImageScan imageScan) throws IOException, InterruptedException;
 

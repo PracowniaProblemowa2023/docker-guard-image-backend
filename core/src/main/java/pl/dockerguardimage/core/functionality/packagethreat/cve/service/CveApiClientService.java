@@ -1,9 +1,9 @@
-package pl.dockerguardimage.core.functionality.cve.service;
+package pl.dockerguardimage.core.functionality.packagethreat.cve.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
-import pl.dockerguardimage.core.functionality.cve.model.CveApiRequest;
-import pl.dockerguardimage.core.functionality.cve.model.CveApiResponse;
+import pl.dockerguardimage.core.functionality.packagethreat.cve.model.CveApiRequest;
+import pl.dockerguardimage.core.functionality.packagethreat.cve.model.CveApiResponse;
 
 import java.io.IOException;
 import java.net.URI;
