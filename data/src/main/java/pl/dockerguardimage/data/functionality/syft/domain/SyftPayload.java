@@ -6,7 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.dockerguardimage.data.functionality.common.domain.EntityId;
 import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
-import pl.dockerguardimage.data.functionality.packagethreat.domain.PackageThreat;
+import pl.dockerguardimage.data.functionality.packagethreatcve.domain.PackageThreatCve;
+import pl.dockerguardimage.data.functionality.packagethreatosv.domain.PackageThreatOsv;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
@@ -37,14 +38,22 @@ public class SyftPayload implements EntityId<Long> {
     private String type;
 
     @OneToMany(mappedBy = "syftPayload")
-    private Set<PackageThreat> packageThreats = new HashSet<>();
+    private Set<PackageThreatOsv> packageThreatsOsv = new HashSet<>();
+
+    @OneToMany(mappedBy = "syftPayload")
+    private Set<PackageThreatCve> packageThreatsCve = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_scan_id", nullable = false)
     private ImageScan imageScan;
 
-    public void addPackageThreat(PackageThreat packageThreat) {
-        getPackageThreats().add(packageThreat);
+    public void addPackageThreatOsv(PackageThreatOsv packageThreat) {
+        getPackageThreatsOsv().add(packageThreat);
+        packageThreat.setSyftPayload(this);
+    }
+
+    public void addPackageThreatCve(PackageThreatCve packageThreat) {
+        getPackageThreatsCve().add(packageThreat);
         packageThreat.setSyftPayload(this);
     }
 }
