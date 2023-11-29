@@ -8,14 +8,16 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.dockerguardimage.core.functionality.common.properties.JobProperties;
+import pl.dockerguardimage.core.functionality.packagethreat.PackageThreatService;
 
 @Slf4j
 @Component
 @DisallowConcurrentExecution
 public class OsvJob implements Job {
 
-    //    @Autowired (ważne by pole było przez @Autowired - wstrzykiwanie przez konstruktor nie zadziała)
-//    private OsvIntegrationService osvIntegrationService;
+    @Autowired
+    private PackageThreatService packageThreatService;
+
     @Autowired
     private JobProperties jobProperties;
 
@@ -24,8 +26,6 @@ public class OsvJob implements Job {
         if (jobProperties.getOsv().isEnabled()) {
             log.debug("Job works");
         }
-        //tu po prostu wykonujesz service
-        //osvIntegrationService.execute() - tutaj
+        packageThreatService.executeImageScanInProgressJob();
     }
-
 }

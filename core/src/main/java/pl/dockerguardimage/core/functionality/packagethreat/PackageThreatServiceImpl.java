@@ -28,7 +28,7 @@ import java.util.Set;
 @Transactional
 @Service
 @AllArgsConstructor
-public class PackageThreatCreateServiceImpl implements PackageThreatService {
+public class PackageThreatServiceImpl implements PackageThreatService {
 
     private final OsvApiClientService osvApiClientService;
     private final CveApiClientService cveApiClientService;
@@ -36,8 +36,7 @@ public class PackageThreatCreateServiceImpl implements PackageThreatService {
     private final ImageScanQueryService imageScanQueryService;
     private final ImageScanCudService imageScanCudService;
 
-    @Override
-    public void scanImageScanInProgressJob() {
+    public void executeImageScanInProgressJob() {
 
         Iterable<ImageScan> imageScans = imageScanQueryService.getByResult(Result.PROGRESS);
 

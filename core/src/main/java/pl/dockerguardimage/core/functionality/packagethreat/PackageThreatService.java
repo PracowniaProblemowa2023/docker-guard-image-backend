@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public interface PackageThreatService {
 
-     void scanImageScanInProgressJob();
+     void executeImageScanInProgressJob();
 
      void createAllByImageScanOsv(ImageScan imageScan) throws IOException, InterruptedException;
 
