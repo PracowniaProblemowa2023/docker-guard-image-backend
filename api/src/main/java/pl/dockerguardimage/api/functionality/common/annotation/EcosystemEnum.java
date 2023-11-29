@@ -13,12 +13,9 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = EcosystemEnumValidator.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-@NotNull(message = "Value cannot be null")
 @ReportAsSingleViolation
 public @interface EcosystemEnum {
     Class<? extends Enum<?>> enumClazz();
-
-    String message() default "must be any of enum Ecosystem";
 
     Class<?>[] groups() default {};
 
