@@ -34,6 +34,17 @@ springdoc:
 server:
   port: 8443
 
+logging:
+  level:
+    pl:
+      dockerguardimage: debug
+
 syft:
   directory: C:\syft\syft-%d.txt
   command: cmd /c syft %s --scope all-layers > %s
+
+jobs:
+  enabled: true
+  osv:
+    cron: "0 0/1 * 1/1 * ? *"
+    enabled: true
