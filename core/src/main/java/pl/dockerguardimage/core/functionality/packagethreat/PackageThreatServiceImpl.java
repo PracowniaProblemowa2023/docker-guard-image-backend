@@ -71,28 +71,33 @@ public class PackageThreatServiceImpl implements PackageThreatService {
             OsvApiResponse osvApiResponse = osvApiClientService
                     .getOsvVulnerabilityResponse(osvApiRequest);
 
-            for (OsvApiResponse.OsvApiVulnerability vulnerability :
-                    osvApiResponse.vulnerabilities()) {
+            if (osvApiResponse.vulnerabilities() != null) {
 
-                var packageThreat = new PackageThreatOsv();
+                for (OsvApiResponse.OsvApiVulnerability vulnerability :
+                        osvApiResponse.vulnerabilities()) {
 
-                packageThreat.setOsvId(vulnerability.id());
-                packageThreat.setSummary(vulnerability.summary());
-                packageThreat.setDetails(vulnerability.details());
+                    var packageThreat = new PackageThreatOsv();
 
-                LocalDateTime modified = LocalDateTime.parse(vulnerability.modified(), formatter);
-                packageThreat.setModified(modified);
+                    packageThreat.setOsvId(vulnerability.id());
+                    packageThreat.setSummary(vulnerability.summary());
+                    packageThreat.setDetails(vulnerability.details());
 
-                LocalDateTime published = LocalDateTime.parse(vulnerability.published(), formatter);
-                packageThreat.setModified(published);
+                    LocalDateTime modified = LocalDateTime.parse(vulnerability.modified(), formatter);
+                    packageThreat.setModified(modified);
 
-                packageThreat.setSeverity(OsvApiMapperService.getSeverityFromVulnerability(vulnerability));
+                    LocalDateTime published = LocalDateTime.parse(vulnerability.published(), formatter);
+                    packageThreat.setModified(published);
 
-                payload.addPackageThreatOsv(packageThreat);
+                    packageThreat.setSeverity(OsvApiMapperService.getSeverityFromVulnerability(vulnerability));
+
+                    payload.addPackageThreatOsv(packageThreat);
+
+                }
+
+                syftPayloadCudService.update(payload);
 
             }
 
-            syftPayloadCudService.update(payload);
         }
 
     }
@@ -115,37 +120,40 @@ public class PackageThreatServiceImpl implements PackageThreatService {
             OsvApiResponse osvApiResponse = osvApiClientService
                     .getOsvVulnerabilityResponse(osvApiRequest);
 
-            for (OsvApiResponse.OsvApiVulnerability vulnerability :
-                    osvApiResponse.vulnerabilities()) {
+            if (osvApiResponse.vulnerabilities() != null) {
 
-                CveApiRequest cveApiRequest = CveApiRequest
-                        .builder()
-                        .cve(vulnerability.aliases().get(0))
-                        .build();
+                for (OsvApiResponse.OsvApiVulnerability vulnerability :
+                        osvApiResponse.vulnerabilities()) {
 
-                CveApiResponse cveApiResponse = cveApiClientService.getOsvVulnerabilityResponse(cveApiRequest);
+                    CveApiRequest cveApiRequest = CveApiRequest
+                            .builder()
+                            .cve(vulnerability.aliases().get(0))
+                            .build();
 
-                var packageThreat = new PackageThreatCve();
+                    CveApiResponse cveApiResponse = cveApiClientService.getOsvVulnerabilityResponse(cveApiRequest);
 
-                packageThreat.setCveId(cveApiResponse.id());
-                packageThreat.setSummary(cveApiResponse.summary());
-                packageThreat.setDetails(cveApiResponse.summary());
+                    var packageThreat = new PackageThreatCve();
 
-                LocalDateTime modified = LocalDateTime.parse(cveApiResponse.modified(), formatter);
-                packageThreat.setModified(modified);
+                    packageThreat.setCveId(cveApiResponse.id());
+                    packageThreat.setSummary(cveApiResponse.summary());
+                    packageThreat.setDetails(cveApiResponse.summary());
 
-                LocalDateTime published = LocalDateTime.parse(cveApiResponse.published(), formatter);
-                packageThreat.setModified(published);
+                    LocalDateTime modified = LocalDateTime.parse(cveApiResponse.modified(), formatter);
+                    packageThreat.setModified(modified);
 
-                packageThreat.setSeverity(CveApiMapperService.getSeverity(cveApiResponse));
+                    LocalDateTime published = LocalDateTime.parse(cveApiResponse.published(), formatter);
+                    packageThreat.setModified(published);
 
-                payload.addPackageThreatCve(packageThreat);
+                    packageThreat.setSeverity(CveApiMapperService.getSeverity(cveApiResponse));
+
+                    payload.addPackageThreatCve(packageThreat);
+
+                }
+
+                syftPayloadCudService.update(payload);
 
             }
 
-            syftPayloadCudService.update(payload);
         }
-
-
     }
 }
