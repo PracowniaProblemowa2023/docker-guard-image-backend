@@ -9,6 +9,7 @@ import pl.dockerguardimage.data.functionality.syft.domain.SyftPayload;
 
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -26,19 +27,19 @@ public class PackageThreatOsv implements EntityId<Long> {
     @NotEmpty
     private String osvId;
 
-    @Column(name = "summary")
+    @Column(name = "summary", columnDefinition="text")
     @NotEmpty
     private String summary;
 
-    @Column(name = "details")
+    @Column(name = "details", columnDefinition="text")
     @NotEmpty
     private String details;
 
     @Column(name = "modified")
-    private LocalDateTime modified;
+    private ZonedDateTime modified;
 
     @Column(name = "published")
-    private LocalDateTime published;
+    private ZonedDateTime published;
 
     @Column(name = "severity")
     @NotEmpty

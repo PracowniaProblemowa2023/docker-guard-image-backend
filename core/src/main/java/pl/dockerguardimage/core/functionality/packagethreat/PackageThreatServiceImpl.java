@@ -1,6 +1,7 @@
 package pl.dockerguardimage.core.functionality.packagethreat;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.dockerguardimage.core.functionality.packagethreat.cve.model.CveApiMapperService;
@@ -16,18 +17,26 @@ import pl.dockerguardimage.data.functionality.imagescan.domain.Result;
 import pl.dockerguardimage.data.functionality.imagescan.service.ImageScanCudService;
 import pl.dockerguardimage.data.functionality.imagescan.service.ImageScanQueryService;
 import pl.dockerguardimage.data.functionality.packagethreatcve.domain.PackageThreatCve;
+import pl.dockerguardimage.data.functionality.packagethreatcve.service.PackageThreatCveCudService;
 import pl.dockerguardimage.data.functionality.packagethreatosv.domain.PackageThreatOsv;
+import pl.dockerguardimage.data.functionality.packagethreatosv.service.PackageThreatOsvCudService;
 import pl.dockerguardimage.data.functionality.syft.domain.SyftPayload;
 import pl.dockerguardimage.data.functionality.syft.service.SyftPayloadCudService;
 
+import java.awt.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Collections;
 import java.util.Set;
 
 @Transactional
 @Service
 @AllArgsConstructor
+@Slf4j
 public class PackageThreatServiceImpl implements PackageThreatService {
 
     private final OsvApiClientService osvApiClientService;
@@ -35,41 +44,53 @@ public class PackageThreatServiceImpl implements PackageThreatService {
     private final SyftPayloadCudService syftPayloadCudService;
     private final ImageScanQueryService imageScanQueryService;
     private final ImageScanCudService imageScanCudService;
+    private final PackageThreatOsvCudService packageThreatOsvCudService;
+    private final PackageThreatCveCudService packageThreatCveCudService;
 
     public void executeImageScanInProgressJob() {
-
         Iterable<ImageScan> imageScans = imageScanQueryService.getByResult(Result.PROGRESS);
 
-        imageScans.forEach(imageScan -> {
-            try {
-                this.createAllByImageScanOsv(imageScan);
-                this.createAllByImageScanCve(imageScan);
-                imageScan.setResult(Result.FINISHED);
-                imageScanCudService.update(imageScan);
+        log.debug("Images to scan... ");
+        imageScans.forEach(x -> log.debug(x.getImageName()));
 
-            } catch (IOException | InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        for (ImageScan imageScan : imageScans) {
+            String imageName = imageScan.getImageName();
+            log.debug("Scanning " + imageName + "...");
+            log.debug("Scanning " + imageName + "for osv...");
+            this.createAllByImageScanOsv(imageScan);
+            log.debug(imageName + " scanned for osv...");
+            log.debug("Scanning " + imageName + "for cve...");
+            this.createAllByImageScanCve(imageScan);
+            log.debug(imageName + " scanned for cve...");
+            imageScan.setResult(Result.FINISHED);
+            imageScanCudService.update(imageScan);
+            log.debug(imageName + " scan successfully finished...");
+        }
+
     }
 
     @Override
-    public void createAllByImageScanOsv(ImageScan imageScan) throws IOException, InterruptedException {
+    public void createAllByImageScanOsv(ImageScan imageScan) {
 
         Set<SyftPayload> payloads = imageScan.getSyftPayloads();
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         for (SyftPayload payload : payloads) {
 
             OsvApiRequest osvApiRequest = OsvApiRequest
                     .builder()
-                    .osvPackage(new OsvApiRequest.OsvPackage(payload.getName(), payload.getType()))
+                    .osvPackage(new OsvApiRequest.OsvPackage(getPayloadName(payload), getPayloadType(payload)))
                     .version(payload.getVersion())
                     .build();
 
-            OsvApiResponse osvApiResponse = osvApiClientService
-                    .getOsvVulnerabilityResponse(osvApiRequest);
+            OsvApiResponse osvApiResponse = null;
+            try {
+                osvApiResponse = osvApiClientService
+                        .getOsvVulnerabilityResponse(osvApiRequest);
+            } catch (IOException | InterruptedException e) {
+                log.debug("ERROR FOR OSV REQUEST: " + osvApiRequest);
+                log.debug("ERROR FOR OSV RESPONSE: " + osvApiResponse);
+                throw new RuntimeException(e);
+            }
 
             if (osvApiResponse.vulnerabilities() != null) {
 
@@ -82,78 +103,150 @@ public class PackageThreatServiceImpl implements PackageThreatService {
                     packageThreat.setSummary(vulnerability.summary());
                     packageThreat.setDetails(vulnerability.details());
 
-                    LocalDateTime modified = LocalDateTime.parse(vulnerability.modified(), formatter);
+
+                    ZonedDateTime modified = parseToZonedDateTime(vulnerability.modified());
                     packageThreat.setModified(modified);
 
-                    LocalDateTime published = LocalDateTime.parse(vulnerability.published(), formatter);
-                    packageThreat.setModified(published);
+                    ZonedDateTime published = parseToZonedDateTime(vulnerability.published());
+                    packageThreat.setPublished(published);
 
                     packageThreat.setSeverity(OsvApiMapperService.getSeverityFromVulnerability(vulnerability));
 
+                    packageThreat.setSyftPayload(payload);
+
+                    packageThreatOsvCudService.create(packageThreat);
+
                     payload.addPackageThreatOsv(packageThreat);
-
                 }
-
                 syftPayloadCudService.update(payload);
-
             }
-
         }
-
     }
 
     @Override
-    public void createAllByImageScanCve(ImageScan imageScan) throws IOException, InterruptedException {
+    public void createAllByImageScanCve(ImageScan imageScan) {
 
         Set<SyftPayload> payloads = imageScan.getSyftPayloads();
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         for (SyftPayload payload : payloads) {
 
             OsvApiRequest osvApiRequest = OsvApiRequest
                     .builder()
-                    .osvPackage(new OsvApiRequest.OsvPackage(payload.getName(), payload.getType()))
+                    .osvPackage(new OsvApiRequest.OsvPackage(getPayloadName(payload), getPayloadType(payload)))
                     .version(payload.getVersion())
                     .build();
 
-            OsvApiResponse osvApiResponse = osvApiClientService
-                    .getOsvVulnerabilityResponse(osvApiRequest);
+            OsvApiResponse osvApiResponse = null;
+            try {
+                osvApiResponse = osvApiClientService
+                        .getOsvVulnerabilityResponse(osvApiRequest);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                log.debug("ERROR FOR OSV - CVE REQUEST: " + osvApiRequest);
+                log.debug("ERROR FOR OSV - CVE RESPONSE: " + osvApiResponse);
+            }
 
-            if (osvApiResponse.vulnerabilities() != null) {
+            if (osvApiResponse != null && osvApiResponse.vulnerabilities() != null) {
 
                 for (OsvApiResponse.OsvApiVulnerability vulnerability :
                         osvApiResponse.vulnerabilities()) {
 
                     CveApiRequest cveApiRequest = CveApiRequest
                             .builder()
-                            .cve(vulnerability.aliases().get(0))
+                            .cve(vulnerability.aliases() != null ? getCveAlias(vulnerability) : "")
                             .build();
 
-                    CveApiResponse cveApiResponse = cveApiClientService.getOsvVulnerabilityResponse(cveApiRequest);
+                    CveApiResponse cveApiResponse = null;
+                    try {
+                        cveApiResponse = cveApiClientService.getOsvVulnerabilityResponse(cveApiRequest);
+                    } catch (IOException | InterruptedException e) {
 
-                    var packageThreat = new PackageThreatCve();
+                    }
 
-                    packageThreat.setCveId(cveApiResponse.id());
-                    packageThreat.setSummary(cveApiResponse.summary());
-                    packageThreat.setDetails(cveApiResponse.summary());
+                    if (cveApiResponse != null) {
 
-                    LocalDateTime modified = LocalDateTime.parse(cveApiResponse.modified(), formatter);
-                    packageThreat.setModified(modified);
+                        var packageThreat = new PackageThreatCve();
 
-                    LocalDateTime published = LocalDateTime.parse(cveApiResponse.published(), formatter);
-                    packageThreat.setModified(published);
+                        packageThreat.setCveId(cveApiResponse.id());
+                        packageThreat.setSummary(cveApiResponse.summary());
+                        packageThreat.setDetails(cveApiResponse.summary());
 
-                    packageThreat.setSeverity(CveApiMapperService.getSeverity(cveApiResponse));
+                        ZonedDateTime modified = parseToZonedDateTime(cveApiResponse.modified());
+                        packageThreat.setModified(modified);
 
-                    payload.addPackageThreatCve(packageThreat);
+                        ZonedDateTime published = parseToZonedDateTime(cveApiResponse.published());
+                        packageThreat.setModified(published);
 
+                        packageThreat.setSeverity(CveApiMapperService.getSeverity(cveApiResponse));
+
+                        packageThreat.setSyftPayload(payload);
+
+                        packageThreatCveCudService.create(packageThreat);
+
+                        payload.addPackageThreatCve(packageThreat);
+                    }
                 }
 
                 syftPayloadCudService.update(payload);
-
             }
-
         }
     }
+
+    private String getPayloadName(SyftPayload syftPayload) {
+        String syftName = syftPayload.getName();
+        if (syftName.contains("spring-boot")) {
+            syftName = "org.springframework.boot:" + syftName;
+        } else if (syftName.contains("spring")) {
+            syftName = "org.springframework:" + syftName;
+        } else if (syftName.contains("log4j")) {
+            syftName = "org.apache.logging.log4j:" + syftName;
+        }
+        return syftName;
+    }
+
+    private String getPayloadType(SyftPayload syftPayload) {
+        String syftType = syftPayload.getType();
+        return switch (syftType) {
+
+            case "java-archive" -> "Maven";
+            case "deb" -> "Debian";
+            case "python" -> "PyPI";
+            case "rpm" -> "Linux";
+            default -> syftType;
+        };
+    }
+
+    private ZonedDateTime parseToZonedDateTime(String dateTimeString) {
+        // Format dla LocalDateTime (bez strefy czasowej)
+        DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+        // Format dla ZonedDateTime (z 'Z' jako UTC)
+        DateTimeFormatter zonedDateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
+
+        try {
+            // Najpierw próbujemy parsować jako LocalDateTime
+            LocalDateTime localDateTime = LocalDateTime.parse(dateTimeString, localDateTimeFormatter);
+            // Konwersja LocalDateTime do ZonedDateTime z domyślną strefą czasową
+            return localDateTime.atZone(ZoneId.systemDefault());
+        } catch (DateTimeParseException e) {
+            try {
+                // Jeśli nie uda się jako LocalDateTime, próbujemy jako ZonedDateTime
+                return ZonedDateTime.parse(dateTimeString, zonedDateTimeFormatter);
+            } catch (DateTimeParseException ex) {
+                // Jeśli obie próby zawiodą, zwracamy null lub rzuć wyjątek
+                throw new DateTimeParseException("Nie można sparsować daty: " + dateTimeString, dateTimeString, 0);
+            }
+        }
+    }
+
+    private String getCveAlias(OsvApiResponse.OsvApiVulnerability vulnerability) {
+        return vulnerability.
+                aliases()
+                .stream()
+                .filter(x -> x.contains("CVE"))
+                .findAny()
+                .orElse("");
+    }
 }
+

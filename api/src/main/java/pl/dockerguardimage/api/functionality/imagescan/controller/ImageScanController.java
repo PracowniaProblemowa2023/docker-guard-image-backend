@@ -44,6 +44,12 @@ public class ImageScanController {
         return ResponseEntity.ok(mapped);
     }
 
+    @GetMapping("/state")
+    public ResponseEntity<String> state(@RequestParam Long id) {
+        var result = imageScanQueryService.getById(id);
+        return ResponseEntity.ok(result.getResult().name());
+    }
+
     private PackageThreatDto mapOsvToPackageDto(PackageThreatOsv osv) {
         return new PackageThreatDto(
                 osv.getOsvId(),
