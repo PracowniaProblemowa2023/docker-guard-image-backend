@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
+import pl.dockerguardimage.data.functionality.imagescan.domain.Result;
 
 import java.util.Optional;
 
@@ -24,5 +25,10 @@ class ImageScanQueryServiceImpl implements ImageScanQueryService {
     public ImageScan getById(Long imageScanId) {
         return repository.findById(imageScanId)
                 .orElseThrow(EntityNotFoundException::new);
+    }
+
+    @Override
+    public Iterable<ImageScan> getByResult(Result result) {
+        return repository.findByResult(result);
     }
 }

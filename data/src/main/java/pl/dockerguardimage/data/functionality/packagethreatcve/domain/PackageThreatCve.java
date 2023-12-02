@@ -1,4 +1,4 @@
-package pl.dockerguardimage.data.functionality.packagethreat.domain;
+package pl.dockerguardimage.data.functionality.packagethreatcve.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,36 +9,37 @@ import pl.dockerguardimage.data.functionality.syft.domain.SyftPayload;
 
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "packagethreat")
+@Table(name = "packagethreatcve")
 @NoArgsConstructor
-public class PackageThreat implements EntityId<Long> {
+public class PackageThreatCve implements EntityId<Long> {
 
     @Id
     @Column(name = "package_threat_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "osv_id")
+    @Column(name = "cve_id")
     @NotEmpty
-    private String osvId;
+    private String cveId;
 
-    @Column(name = "summary")
+    @Column(name = "summary", columnDefinition="text")
     @NotEmpty
     private String summary;
 
-    @Column(name = "details")
+    @Column(name = "details", columnDefinition="text")
     @NotEmpty
     private String details;
 
     @Column(name = "modified")
-    private LocalDateTime modified;
+    private ZonedDateTime modified;
 
     @Column(name = "published")
-    private LocalDateTime published;
+    private ZonedDateTime published;
 
     @Column(name = "severity")
     @NotEmpty
