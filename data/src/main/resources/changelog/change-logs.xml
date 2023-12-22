@@ -9,7 +9,8 @@
     <include file="change-set/202311061040_create_fileaccess.xml" relativeToChangelogFile="true"/>
     <include file="change-set/202311061041_create_imagescan.xml" relativeToChangelogFile="true"/>
     <include file="change-set/202311061042_create_notification.xml" relativeToChangelogFile="true"/>
-    <include file="change-set/202311061043_create_packagethreat.xml" relativeToChangelogFile="true"/>
+    <include file="change-set/202311061043_create_packagethreatcve.xml" relativeToChangelogFile="true"/>
+    <include file="change-set/202311061043_create_packagethreatosv.xml" relativeToChangelogFile="true"/>
     <include file="change-set/202311061044_create_syft_payload.xml" relativeToChangelogFile="true"/>
     <include file="change-set/202311152043_move_foregin_key_changeset_to_file.xml" relativeToChangelogFile="true"/>
     <include file="change-set/202311152042_add_notification_user_table.xml" relativeToChangelogFile="true"/>

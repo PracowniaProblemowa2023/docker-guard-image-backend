@@ -40,8 +40,16 @@
     </changeSet>
 
     <changeSet author="Dariusz (generated)" id="202311061037-16">
-        <addForeignKeyConstraint baseColumnNames="syft_payload_id" baseTableName="packagethreat"
-                                 constraintName="packagethreat_syft_payload_id" deferrable="false"
+        <addForeignKeyConstraint baseColumnNames="syft_payload_id" baseTableName="packagethreatosv"
+                                 constraintName="packagethreatosv_syft_payload_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="syft_paylaod_id" referencedTableName="syft_payload"
+                                 validate="true"/>
+    </changeSet>
+
+    <changeSet author="Dariusz (generated)" id="202311061037-37">
+        <addForeignKeyConstraint baseColumnNames="syft_payload_id" baseTableName="packagethreatcve"
+                                 constraintName="packagethreatcve_syft_payload_id" deferrable="false"
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
                                  referencedColumnNames="syft_paylaod_id" referencedTableName="syft_payload"
                                  validate="true"/>
