@@ -21,6 +21,8 @@ spring:
         jwt:
           jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
           issuer-uri: ${KEY_CLOAK_ISSUER_URL}
+  profiles:
+    active: dev-local
 springdoc:
   swagger-ui:
     path: /docs
@@ -38,13 +40,3 @@ logging:
   level:
     pl:
       dockerguardimage: debug
-
-syft:
-  directory: C:\syft\syft-%d.txt
-  command: cmd /c syft %s --scope all-layers > %s
-
-jobs:
-  enabled: true
-  osv:
-    cron: "0 0/1 * 1/1 * ? *"
-    enabled: true

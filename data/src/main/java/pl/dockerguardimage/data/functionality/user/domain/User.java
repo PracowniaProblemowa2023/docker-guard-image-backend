@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.dockerguardimage.data.entity.Comment;
 import pl.dockerguardimage.data.entity.FileAccess;
-import pl.dockerguardimage.data.entity.Notification;
 import pl.dockerguardimage.data.functionality.common.domain.EntityId;
 import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
+import pl.dockerguardimage.data.functionality.notification.domain.Notification;
 import pl.dockerguardimage.data.functionality.role.domain.Role;
 
 import javax.validation.constraints.Email;

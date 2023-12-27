@@ -1,0 +1,9 @@
+syft:
+  directory: /tmp/syft-%d
+  command: syft %s > %s
+
+jobs:
+  enabled: true
+  osv:
+    cron: "0 0/1 * 1/1 * ? *"
+    enabled: true

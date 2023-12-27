@@ -1,0 +1,23 @@
+version: '3.8'
+
+networks:
+  docker-image-guard-network:
+    name: docker-image-guard-network
+    driver: bridge
+    external: true
+
+services:
+  docker-image-guard-backend:
+    container_name: docker-image-guard-backend
+    image: docker-image-guard-backend:latest
+    environment:
+      - DB_URL=${DB_URL}
+      - DB_SCHEMA=${DB_SCHEMA}
+      - DB_LOGIN=${DB_LOGIN}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - KEY_CLOAK_ISSUER_URL=${KEY_CLOAK_ISSUER_URL}
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+    networks:
+      - docker-image-guard-network
+    ports:
+      - 8443:8443

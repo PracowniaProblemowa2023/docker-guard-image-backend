@@ -1,4 +1,4 @@
-package pl.dockerguardimage.data.entity;
+package pl.dockerguardimage.data.functionality.notification.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
