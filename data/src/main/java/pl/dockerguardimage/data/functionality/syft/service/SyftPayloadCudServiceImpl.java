@@ -7,7 +7,8 @@ import pl.dockerguardimage.data.functionality.syft.domain.SyftPayload;
 
 @Transactional
 @Service
-public class SyftPayloadCudServiceImpl extends CudServiceImpl<SyftPayloadRepository, SyftPayload, Long> implements SyftPayloadCudService {
+class SyftPayloadCudServiceImpl extends CudServiceImpl<SyftPayloadRepository, SyftPayload, Long> implements SyftPayloadCudService {
+
     public SyftPayloadCudServiceImpl(SyftPayloadRepository repository) {
         super(repository);
     }

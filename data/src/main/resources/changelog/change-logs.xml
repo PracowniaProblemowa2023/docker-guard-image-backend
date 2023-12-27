@@ -18,5 +18,6 @@
     <include file="change-set/202311171519_add_firstname_and_lastname.xml" relativeToChangelogFile="true"/>
     <include file="change-set/202311181144_move_status_to_imagescan_rename_url.xml" relativeToChangelogFile="true"/>
     <include file="change-set/202312271056_remove_name_from_imagescan.xml" relativeToChangelogFile="true"/>
+    <include file="change-set/202312271952_add_seen.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

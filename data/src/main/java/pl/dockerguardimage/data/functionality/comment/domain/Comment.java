@@ -1,9 +1,10 @@
-package pl.dockerguardimage.data.entity;
+package pl.dockerguardimage.data.functionality.comment.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.dockerguardimage.data.functionality.common.domain.EntityId;
 import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
 import pl.dockerguardimage.data.functionality.user.domain.User;
 
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "comment")
 @NoArgsConstructor
-public class Comment {
+public class Comment implements EntityId<Long> {
 
     @Id
     @Column(name = "comment_id", nullable = false)

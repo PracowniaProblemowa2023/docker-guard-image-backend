@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.dockerguardimage.data.entity.Comment;
-import pl.dockerguardimage.data.entity.FileAccess;
+import pl.dockerguardimage.data.functionality.comment.domain.Comment;
 import pl.dockerguardimage.data.functionality.common.domain.EntityId;
+import pl.dockerguardimage.data.functionality.fileaccess.domain.FileAccess;
 import pl.dockerguardimage.data.functionality.syft.domain.SyftPayload;
 import pl.dockerguardimage.data.functionality.user.domain.User;
 

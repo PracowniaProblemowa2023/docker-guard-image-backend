@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.dockerguardimage.data.functionality.common.domain.EntityId;
 import pl.dockerguardimage.data.functionality.user.domain.User;
 
 import javax.validation.constraints.NotEmpty;
@@ -16,7 +17,7 @@ import java.util.Set;
 @Entity
 @Table(name = "notification")
 @NoArgsConstructor
-public class Notification {
+public class Notification implements EntityId<Long> {
 
     @Id
     @Column(name = "notification_id", nullable = false)
@@ -30,13 +31,15 @@ public class Notification {
     @NotEmpty
     private String message;
 
+    private boolean seen;
+
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "notification_user",
-            joinColumns = { @JoinColumn(referencedColumnName = "notification_id") },
-            inverseJoinColumns = { @JoinColumn(referencedColumnName = "user_id") })
+            joinColumns = {@JoinColumn(referencedColumnName = "notification_id")},
+            inverseJoinColumns = {@JoinColumn(referencedColumnName = "user_id")})
     Set<User> users = new HashSet<>();
 
 

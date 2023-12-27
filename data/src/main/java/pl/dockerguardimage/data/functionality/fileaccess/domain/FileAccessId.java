@@ -1,4 +1,4 @@
-package pl.dockerguardimage.data.entity;
+package pl.dockerguardimage.data.functionality.fileaccess.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

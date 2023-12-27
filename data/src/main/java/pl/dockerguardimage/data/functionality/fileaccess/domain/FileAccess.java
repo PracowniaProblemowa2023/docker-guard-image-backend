@@ -1,10 +1,12 @@
-package pl.dockerguardimage.data.entity;
+package pl.dockerguardimage.data.functionality.fileaccess.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.dockerguardimage.data.functionality.accesstype.domain.AccessType;
+import pl.dockerguardimage.data.functionality.common.domain.EntityId;
 import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
 import pl.dockerguardimage.data.functionality.user.domain.User;
 
@@ -15,7 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "fileaccess")
 @NoArgsConstructor
-public class FileAccess {
+public class FileAccess implements EntityId<FileAccessId> {
 
     @EmbeddedId
     private FileAccessId id;

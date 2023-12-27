@@ -1,10 +1,12 @@
-package pl.dockerguardimage.data.entity;
+package pl.dockerguardimage.data.functionality.accesstype.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.dockerguardimage.data.functionality.common.domain.EntityId;
+import pl.dockerguardimage.data.functionality.fileaccess.domain.FileAccess;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -13,17 +15,18 @@ import javax.validation.constraints.NotEmpty;
 @Entity
 @Table(name = "accesstype")
 @NoArgsConstructor
-public class AccessType {
+public class AccessType implements EntityId<Long> {
 
     @Id
     @Column(name = "access_type_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "name", nullable = false)
     @NotEmpty
     @NotNull
-    private String name;
+    private AccessTypePermission name;
 
     @Column(name = "description", nullable = false)
     @NotEmpty
