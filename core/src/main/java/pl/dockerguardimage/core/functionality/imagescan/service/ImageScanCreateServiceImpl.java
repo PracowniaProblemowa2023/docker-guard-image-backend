@@ -12,8 +12,6 @@ import pl.dockerguardimage.data.functionality.imagescan.service.ImageScanQuerySe
 import pl.dockerguardimage.data.functionality.user.service.UserQueryService;
 import pl.dockerguardimage.security.functionality.user.context.UserContextHolder;
 
-import java.util.UUID;
-
 @Service
 @AllArgsConstructor
 class ImageScanCreateServiceImpl implements ImageScanCreateService {
@@ -26,7 +24,8 @@ class ImageScanCreateServiceImpl implements ImageScanCreateService {
     @Override
     public ImageScanGetDTO create(ImageScanCreateDTO dto) {
         var imageScanOpt = imageScanQueryService.getOptByImage(dto.image());
-        var imageName = imageScanOpt.isPresent() ? dto.image() + UUID.randomUUID() : dto.image();
+//        var imageName = imageScanOpt.isPresent() ? dto.image() + UUID.randomUUID() : dto.image();
+        var imageName = dto.image();
         var imageScan = new ImageScan();
         imageScan.setImageName(imageName);
         imageScan.setAuthor(userQueryService.getByUsername(UserContextHolder.getAuthenticatedUser().username()));
