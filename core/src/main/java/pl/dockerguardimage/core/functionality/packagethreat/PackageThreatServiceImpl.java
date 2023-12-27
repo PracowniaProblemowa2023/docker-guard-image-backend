@@ -64,7 +64,6 @@ public class PackageThreatServiceImpl implements PackageThreatService {
             imageScanCudService.update(imageScan);
             log.debug(imageName + " scan successfully finished...");
         }
-
     }
 
     @Override
@@ -86,11 +85,9 @@ public class PackageThreatServiceImpl implements PackageThreatService {
                         .getOsvVulnerabilityResponse(osvApiRequest);
             } catch (IOException | InterruptedException e) {
                 log.debug("ERROR FOR OSV REQUEST: " + osvApiRequest);
-                log.debug("ERROR FOR OSV RESPONSE: " + osvApiResponse);
-                throw new RuntimeException(e);
             }
 
-            if (osvApiResponse.vulnerabilities() != null) {
+            if (osvApiResponse != null && osvApiResponse.vulnerabilities() != null) {
 
                 for (OsvApiResponse.OsvApiVulnerability vulnerability :
                         osvApiResponse.vulnerabilities()) {
@@ -100,7 +97,6 @@ public class PackageThreatServiceImpl implements PackageThreatService {
                     packageThreat.setOsvId(vulnerability.id());
                     packageThreat.setSummary(vulnerability.summary());
                     packageThreat.setDetails(vulnerability.details());
-
 
                     ZonedDateTime modified = parseToZonedDateTime(vulnerability.modified());
                     packageThreat.setModified(modified);
@@ -138,11 +134,8 @@ public class PackageThreatServiceImpl implements PackageThreatService {
             try {
                 osvApiResponse = osvApiClientService
                         .getOsvVulnerabilityResponse(osvApiRequest);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException | IOException e) {
                 log.debug("ERROR FOR OSV - CVE REQUEST: " + osvApiRequest);
-                log.debug("ERROR FOR OSV - CVE RESPONSE: " + osvApiResponse);
             }
 
             if (osvApiResponse != null && osvApiResponse.vulnerabilities() != null) {
@@ -159,7 +152,7 @@ public class PackageThreatServiceImpl implements PackageThreatService {
                     try {
                         cveApiResponse = cveApiClientService.getOsvVulnerabilityResponse(cveApiRequest);
                     } catch (IOException | InterruptedException e) {
-
+                        log.debug("ERROR FOR CVE REQUEST: " + osvApiRequest);
                     }
 
                     if (cveApiResponse != null) {
@@ -185,7 +178,6 @@ public class PackageThreatServiceImpl implements PackageThreatService {
                         payload.addPackageThreatCve(packageThreat);
                     }
                 }
-
                 syftPayloadCudService.update(payload);
             }
         }
@@ -216,24 +208,16 @@ public class PackageThreatServiceImpl implements PackageThreatService {
     }
 
     private ZonedDateTime parseToZonedDateTime(String dateTimeString) {
-        // Format dla LocalDateTime (bez strefy czasowej)
         DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-
-        // Format dla ZonedDateTime (z 'Z' jako UTC)
         DateTimeFormatter zonedDateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
-
         try {
-            // Najpierw próbujemy parsować jako LocalDateTime
             LocalDateTime localDateTime = LocalDateTime.parse(dateTimeString, localDateTimeFormatter);
-            // Konwersja LocalDateTime do ZonedDateTime z domyślną strefą czasową
             return localDateTime.atZone(ZoneId.systemDefault());
         } catch (DateTimeParseException e) {
             try {
-                // Jeśli nie uda się jako LocalDateTime, próbujemy jako ZonedDateTime
                 return ZonedDateTime.parse(dateTimeString, zonedDateTimeFormatter);
             } catch (DateTimeParseException ex) {
-                // Jeśli obie próby zawiodą, zwracamy null lub rzuć wyjątek
-                throw new DateTimeParseException("Nie można sparsować daty: " + dateTimeString, dateTimeString, 0);
+                throw new DateTimeParseException("Date cannot be parsed: " + dateTimeString, dateTimeString, 0);
             }
         }
     }
