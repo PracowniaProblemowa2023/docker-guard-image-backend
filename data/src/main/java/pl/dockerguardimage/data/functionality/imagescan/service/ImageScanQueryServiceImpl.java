@@ -17,8 +17,8 @@ class ImageScanQueryServiceImpl implements ImageScanQueryService {
     private final ImageScanRepository repository;
 
     @Override
-    public Optional<ImageScan> getOptByName(String name) {
-        return repository.findOptByName(name);
+    public Optional<ImageScan> getOptByImage(String name) {
+        return repository.findOptByImageName(name);
     }
 
     @Override
@@ -28,7 +28,7 @@ class ImageScanQueryServiceImpl implements ImageScanQueryService {
     }
 
     @Override
-    public Iterable<ImageScan> getByResult(Result result) {
+    public Iterable<ImageScan> getAllByResult(Result result) {
         return repository.findByResult(result);
     }
 }

@@ -23,14 +23,12 @@ import pl.dockerguardimage.data.functionality.packagethreatosv.service.PackageTh
 import pl.dockerguardimage.data.functionality.syft.domain.SyftPayload;
 import pl.dockerguardimage.data.functionality.syft.service.SyftPayloadCudService;
 
-import java.awt.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Collections;
 import java.util.Set;
 
 @Transactional
@@ -48,7 +46,7 @@ public class PackageThreatServiceImpl implements PackageThreatService {
     private final PackageThreatCveCudService packageThreatCveCudService;
 
     public void executeImageScanInProgressJob() {
-        Iterable<ImageScan> imageScans = imageScanQueryService.getByResult(Result.PROGRESS);
+        Iterable<ImageScan> imageScans = imageScanQueryService.getAllByResult(Result.PROGRESS);
 
         log.debug("Images to scan... ");
         imageScans.forEach(x -> log.debug(x.getImageName()));

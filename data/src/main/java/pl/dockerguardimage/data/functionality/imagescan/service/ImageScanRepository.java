@@ -12,9 +12,11 @@ import java.util.Optional;
 @Repository
 public interface ImageScanRepository extends JpaRepository<ImageScan, Long> {
 
-    @Query("select is from ImageScan is where is.name = :name")
-    Optional<ImageScan> findOptByName(@Param("name") String name);
+    @Query("select is from ImageScan is where is.imageName = :imageName")
+    Optional<ImageScan> findOptByImageName(@Param("imageName") String imageName);
 
-    @Query("select is from ImageScan is where is.result = :result")
+    @Query("select is from ImageScan is " +
+            "left join fetch is.syftPayloads spl " +
+            "where is.result = :result")
     Iterable<ImageScan> findByResult(@Param("result") Result result);
 }

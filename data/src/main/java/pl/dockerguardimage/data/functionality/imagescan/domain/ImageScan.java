@@ -27,10 +27,6 @@ public class ImageScan implements EntityId<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    @NotEmpty
-    private String name;
-
     @Column(name = "image_name", nullable = false)
     @NotEmpty
     private String imageName;

@@ -25,17 +25,15 @@ class ImageScanCreateServiceImpl implements ImageScanCreateService {
 
     @Override
     public ImageScanGetDTO create(ImageScanCreateDTO dto) {
-        var imageScanOpt = imageScanQueryService.getOptByName(dto.name());
-        var name = imageScanOpt.isPresent() ? dto.name() + UUID.randomUUID() : dto.name();
+        var imageScanOpt = imageScanQueryService.getOptByImage(dto.image());
+        var imageName = imageScanOpt.isPresent() ? dto.image() + UUID.randomUUID() : dto.image();
         var imageScan = new ImageScan();
-        imageScan.setImageName(dto.image());
+        imageScan.setImageName(imageName);
         imageScan.setAuthor(userQueryService.getByUsername(UserContextHolder.getAuthenticatedUser().username()));
-        imageScan.setName(name);
         var created = imageScanCudService.create(imageScan);
         applicationEventPublisher.publishEvent(new SyftEvent(imageScan.getId()));
         return ImageScanGetDTO.builder()
                 .id(created.getId())
-                .name(created.getName())
                 .image(created.getImageName())
                 .result(created.getResult().toString())
                 .build();

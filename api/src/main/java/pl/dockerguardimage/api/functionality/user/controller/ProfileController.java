@@ -1,20 +1,21 @@
 package pl.dockerguardimage.api.functionality.user.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.dockerguardimage.security.functionality.user.context.UserContextHolder;
-import pl.dockerguardimage.security.functionality.user.model.AuthenticatedUser;
+import pl.dockerguardimage.api.functionality.user.mapper.ProfileMapper;
+import pl.dockerguardimage.api.functionality.user.model.ProfileResponse;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/profile")
+@RequestMapping("/api/v1/profile")
 public class ProfileController {
 
     @GetMapping
-    public AuthenticatedUser getProfile() {
-        return UserContextHolder.getAuthenticatedUser();
+    public ResponseEntity<ProfileResponse> getProfile() {
+        return ResponseEntity.ok(ProfileMapper.map());
     }
 
 

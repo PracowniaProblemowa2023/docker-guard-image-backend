@@ -76,4 +76,8 @@ public class User implements EntityId<Long> {
         getRoles().add(role);
         role.getUsers().add(this);
     }
+
+    public String getFullName() {
+        return String.format("%s %s(%s)", firstname, lastname, username);
+    }
 }

@@ -6,9 +6,9 @@ import pl.dockerguardimage.data.functionality.imagescan.domain.Result;
 import java.util.Optional;
 
 public interface ImageScanQueryService {
-    Optional<ImageScan> getOptByName(String name);
+    Optional<ImageScan> getOptByImage(String name);
 
     ImageScan getById(Long imageScanId);
 
-    Iterable<ImageScan> getByResult(Result result);
+    Iterable<ImageScan> getAllByResult(Result result);
 }

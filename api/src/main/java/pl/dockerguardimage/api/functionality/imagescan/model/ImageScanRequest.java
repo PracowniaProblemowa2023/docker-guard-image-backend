@@ -13,8 +13,6 @@ import pl.dockerguardimage.core.validator.annotation.NotNullOrEmpty;
 public class ImageScanRequest {
 
     @NotNullOrEmpty
-    private String name;
-    @NotNullOrEmpty
     private String image;
 
 }
