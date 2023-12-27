@@ -1,5 +1,6 @@
 package pl.dockerguardimage.data.functionality.user.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,12 @@ class UserQueryServiceImpl implements UserQueryService {
     @Override
     public User getByUsername(String username) {
         return userRepository.findByUsername(username.toLowerCase());
+    }
+
+    @Override
+    public User getById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(EntityNotFoundException::new);
     }
 
 }

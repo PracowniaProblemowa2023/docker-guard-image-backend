@@ -31,10 +31,15 @@ public class Notification implements EntityId<Long> {
     @NotEmpty
     private String message;
 
+    private String username;
+    private String additionalInformation;
+
+    private Long elementId;
+
     private boolean seen;
 
     @Column(name = "date", nullable = false)
-    private LocalDateTime date;
+    private LocalDateTime date = LocalDateTime.now();
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "notification_user",
@@ -42,5 +47,14 @@ public class Notification implements EntityId<Long> {
             inverseJoinColumns = {@JoinColumn(referencedColumnName = "user_id")})
     Set<User> users = new HashSet<>();
 
+    public void addUser(User user) {
+        getUsers().add(user);
+        user.getNotifications().add(this);
+    }
+
+    public void removeUser(User user) {
+        getUsers().remove(user);
+        user.getNotifications().remove(this);
+    }
 
 }

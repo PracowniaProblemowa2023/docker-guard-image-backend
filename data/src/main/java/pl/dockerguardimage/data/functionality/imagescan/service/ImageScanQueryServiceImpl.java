@@ -8,6 +8,7 @@ import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
 import pl.dockerguardimage.data.functionality.imagescan.domain.Result;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
@@ -28,7 +29,18 @@ class ImageScanQueryServiceImpl implements ImageScanQueryService {
     }
 
     @Override
+    public ImageScan getByIdWithFileAccess(Long imageScanId) {
+        return repository.findByIdWithFileAccess(imageScanId)
+                .orElseThrow(EntityNotFoundException::new);
+    }
+
+    @Override
     public Iterable<ImageScan> getAllByResult(Result result) {
         return repository.findByResult(result);
+    }
+
+    @Override
+    public Set<ImageScan> getAllByUserId(Long id) {
+        return repository.findAllById(id);
     }
 }

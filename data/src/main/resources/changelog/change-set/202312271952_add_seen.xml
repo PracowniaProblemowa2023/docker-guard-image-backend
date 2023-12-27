@@ -5,8 +5,10 @@
 
     <changeSet id="202312271056-1" author="faronnor">
         <addColumn tableName="notification">
-            <column name="seen" type="BOOLEAN" defaultValue="false">
-            </column>
+            <column name="seen" type="BOOLEAN" defaultValue="false"/>
+            <column name="element_id" type="BIGINT"/>
+            <column name="username" type="VARCHAR(255)"/>
+            <column name="additional_information" type="VARCHAR(255)"/>
         </addColumn>
     </changeSet>
 

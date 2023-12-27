@@ -63,4 +63,9 @@ public class ImageScan implements EntityId<Long> {
         getSyftPayloads().add(syftPayload);
         syftPayload.setImageScan(this);
     }
+
+    public void addFileAccess(FileAccess fileAccess) {
+        getFileAccesses().add(fileAccess);
+        fileAccess.setImageScan(this);
+    }
 }

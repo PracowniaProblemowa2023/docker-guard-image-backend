@@ -8,6 +8,7 @@ import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
 import pl.dockerguardimage.data.functionality.imagescan.domain.Result;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface ImageScanRepository extends JpaRepository<ImageScan, Long> {
@@ -19,4 +20,18 @@ public interface ImageScanRepository extends JpaRepository<ImageScan, Long> {
             "left join fetch is.syftPayloads spl " +
             "where is.result = :result")
     Iterable<ImageScan> findByResult(@Param("result") Result result);
+
+    @Query("select is from ImageScan is " +
+            "left join is.fileAccesses fa " +
+            "left join fa.accessType at " +
+            "where is.id = :id")
+    Optional<ImageScan> findByIdWithFileAccess(@Param("id") Long id);
+
+    @Query("select is from ImageScan is " +
+            "left join fetch is.author a " +
+            "left join fetch is.fileAccesses fa " +
+            "left join fetch fa.user u " +
+            "left join fetch fa.accessType at " +
+            "where a.id = :id or u.id = :id ")
+    Set<ImageScan> findAllById(@Param("id") Long id);
 }

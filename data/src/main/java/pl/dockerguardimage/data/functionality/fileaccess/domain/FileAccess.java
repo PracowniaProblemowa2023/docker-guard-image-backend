@@ -24,7 +24,7 @@ public class FileAccess implements EntityId<FileAccessId> {
 
     @Column(name = "date", nullable = false)
     @NotNull
-    private LocalDateTime date;
+    private LocalDateTime date = LocalDateTime.now();
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "file_access_id", referencedColumnName = "access_type_id")

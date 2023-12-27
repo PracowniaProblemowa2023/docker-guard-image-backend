@@ -80,4 +80,9 @@ public class User implements EntityId<Long> {
     public String getFullName() {
         return String.format("%s %s(%s)", firstname, lastname, username);
     }
+
+    public void addFileAccess(FileAccess fileAccess) {
+        getFileAccesses().add(fileAccess);
+        fileAccess.setUser(this);
+    }
 }
