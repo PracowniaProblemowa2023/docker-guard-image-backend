@@ -1,7 +1,9 @@
 package pl.dockerguardimage.core.functionality.packagethreat.osv.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import pl.dockerguardimage.data.functionality.syft.domain.SyftPayload;
 
 import java.util.List;
 

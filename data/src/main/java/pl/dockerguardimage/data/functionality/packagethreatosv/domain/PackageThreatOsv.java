@@ -10,6 +10,8 @@ import pl.dockerguardimage.data.functionality.syft.domain.SyftPayload;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -30,6 +32,10 @@ public class PackageThreatOsv implements EntityId<Long> {
     @Column(name = "summary", columnDefinition="text")
     @NotEmpty
     private String summary;
+
+    @Column(name = "aliases")
+    @NotEmpty
+    private String aliases;
 
     @Column(name = "details", columnDefinition="text")
     @NotEmpty

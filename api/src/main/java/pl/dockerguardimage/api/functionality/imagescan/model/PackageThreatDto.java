@@ -13,5 +13,6 @@ public record PackageThreatDto (
         ZonedDateTime modified,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
         ZonedDateTime published,
-        @JsonProperty("severity") String severity
+        @JsonProperty("severity") String severity,
+        @JsonProperty("aliases") String aliases
 ){}
