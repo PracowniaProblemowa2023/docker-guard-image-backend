@@ -23,16 +23,9 @@ class ImageScanQueryServiceImpl implements ImageScanQueryService {
     }
 
     @Override
-    public ImageScan getById(Long imageScanId, Long userId) {
-        Set<ImageScan> imageScans = this.getAllByUserId(userId);
-
-        ImageScan imageScan = repository.findById(imageScanId)
+    public ImageScan getById(Long imageScanId) {
+        return repository.findById(imageScanId)
                 .orElseThrow(EntityNotFoundException::new);
-
-        if (imageScans.contains(imageScan)) {
-            return imageScan;
-        }
-        else throw new EntityNotFoundException();
     }
 
     @Override
