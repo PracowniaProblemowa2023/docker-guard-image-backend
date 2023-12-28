@@ -9,8 +9,6 @@ import java.util.Set;
 public interface ImageScanQueryService {
     Optional<ImageScan> getOptByImage(String name);
 
-    ImageScan getByIdAndUserId(Long imageScanId, Long userId);
-
     ImageScan getById(Long imageScanId);
 
     ImageScan getByIdWithFileAccess(Long imageScanId);

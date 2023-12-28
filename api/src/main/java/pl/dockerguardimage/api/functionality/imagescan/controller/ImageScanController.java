@@ -13,6 +13,7 @@ import pl.dockerguardimage.core.functionality.imagescan.dto.ImageScanCreateDTO;
 import pl.dockerguardimage.core.functionality.imagescan.dto.ImageScanGetDTO;
 import pl.dockerguardimage.core.functionality.imagescan.service.ImageScanCreateService;
 import pl.dockerguardimage.core.validator.annotation.UserHasAccessToImageScan;
+import pl.dockerguardimage.core.validator.annotation.UserHasAccessToImageScan;
 import pl.dockerguardimage.data.functionality.imagescan.service.ImageScanQueryService;
 import pl.dockerguardimage.security.functionality.user.context.UserContextHolder;
 
@@ -44,15 +45,13 @@ public class ImageScanController {
 
     @GetMapping("/result")
     public ResponseEntity<ImageScanResponse> result(@RequestParam @UserHasAccessToImageScan Long id) {
-        var userId = UserContextHolder.getAuthenticatedUser().id();
-        var result = imageScanQueryService.getByIdAndUserId(id, userId);
+        var result = imageScanQueryService.getById(id);
         return ResponseEntity.ok(ImageScanMapper.mapImageScanToImageScanResponse(result));
     }
 
     @GetMapping("/state")
     public ResponseEntity<ImageScanStateResponse> state(@RequestParam @UserHasAccessToImageScan Long id) {
-        var userId = UserContextHolder.getAuthenticatedUser().id();
-        var result = imageScanQueryService.getByIdAndUserId(id, userId);
+        var result = imageScanQueryService.getById(id);
         return ResponseEntity.ok(ImageScanMapper.mapImageScanState(result));
     }
 }
