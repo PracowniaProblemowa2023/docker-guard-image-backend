@@ -10,6 +10,17 @@ import java.time.format.DateTimeParseException;
 
 public class OsvApiMapperService {
 
+    public static String getSummaryFromVulnerability(OsvApiResponse.OsvApiVulnerability vulnerability) {
+        String summary = vulnerability.summary();
+        String details = vulnerability.details();
+        if (summary  != null && !summary.isEmpty()) {
+            return summary;
+        } else if (details != null && !details.isEmpty()) {
+            return details;
+        }
+        return "";
+    }
+
     public static String getSeverityFromVulnerability(OsvApiResponse.OsvApiVulnerability vulnerability) {
         if (vulnerability.affected().get(0).ecosystemSpecific() != null &&
                 vulnerability.affected().get(0).ecosystemSpecific().severity() != null) {
@@ -18,7 +29,7 @@ public class OsvApiMapperService {
         if (vulnerability.databaseSpecific() != null) {
             return vulnerability.databaseSpecific().severity();
         }
-        return "";
+        return "MEDIUM";
     }
 
     public static String getAliasesFromVulnerability(OsvApiResponse.OsvApiVulnerability vulnerability) {

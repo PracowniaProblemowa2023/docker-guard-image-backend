@@ -42,15 +42,15 @@ public class ImageScanController {
 
     @GetMapping("/result")
     public ResponseEntity<ImageScanResponse> result(@RequestParam Long id) {
-        var result = imageScanQueryService.getById(id);
+        var userId = UserContextHolder.getAuthenticatedUser().id();
+        var result = imageScanQueryService.getById(id, userId);
         return ResponseEntity.ok(ImageScanMapper.mapImageScanToImageScanResponse(result));
     }
 
     @GetMapping("/state")
     public ResponseEntity<ImageScanStateResponse> state(@RequestParam Long id) {
-        var result = imageScanQueryService.getById(id);
+        var userId = UserContextHolder.getAuthenticatedUser().id();
+        var result = imageScanQueryService.getById(id, userId);
         return ResponseEntity.ok(ImageScanMapper.mapImageScanState(result));
     }
-
-
 }

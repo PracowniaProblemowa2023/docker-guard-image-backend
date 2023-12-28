@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.dockerguardimage.core.functionality.packagethreat.cve.model.CveApiBatchRequest;
+import pl.dockerguardimage.core.functionality.packagethreat.cve.model.CveApiBatchResponse;
 import pl.dockerguardimage.core.functionality.packagethreat.cve.model.CveApiMapperService;
 import pl.dockerguardimage.core.functionality.packagethreat.cve.model.CveApiRequest;
-import pl.dockerguardimage.core.functionality.packagethreat.cve.model.CveApiResponse;
 import pl.dockerguardimage.core.functionality.packagethreat.cve.service.CveApiClientService;
+import pl.dockerguardimage.core.functionality.packagethreat.osv.model.OsvApiBatchRequest;
+import pl.dockerguardimage.core.functionality.packagethreat.osv.model.OsvApiBatchResponse;
 import pl.dockerguardimage.core.functionality.packagethreat.osv.model.OsvApiMapperService;
-import pl.dockerguardimage.core.functionality.packagethreat.osv.model.OsvApiRequest;
 import pl.dockerguardimage.core.functionality.packagethreat.osv.model.OsvApiResponse;
 import pl.dockerguardimage.core.functionality.packagethreat.osv.service.OsvApiClientService;
 import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
@@ -23,15 +25,15 @@ import pl.dockerguardimage.data.functionality.packagethreatosv.service.PackageTh
 import pl.dockerguardimage.data.functionality.syft.domain.SyftPayload;
 import pl.dockerguardimage.data.functionality.syft.service.SyftPayloadCudService;
 
-import java.awt.*;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
+import static pl.dockerguardimage.core.functionality.packagethreat.osv.model.OsvApiMapperService.*;
 
 @Transactional
 @Service
@@ -48,7 +50,7 @@ public class PackageThreatServiceImpl implements PackageThreatService {
     private final PackageThreatCveCudService packageThreatCveCudService;
 
     public void executeImageScanInProgressJob() {
-        Iterable<ImageScan> imageScans = imageScanQueryService.getByResult(Result.PROGRESS);
+        Iterable<ImageScan> imageScans = imageScanQueryService.getAllByResult(Result.PROGRESS);
 
         log.debug("Images to scan... ");
         imageScans.forEach(x -> log.debug(x.getImageName()));
@@ -57,10 +59,10 @@ public class PackageThreatServiceImpl implements PackageThreatService {
             String imageName = imageScan.getImageName();
             log.debug("Scanning " + imageName + "...");
             log.debug("Scanning " + imageName + "for osv...");
-            this.createAllByImageScanOsv(imageScan);
+            Set<OsvApiBatchResponse> osvResponses = this.createAllByImageScanOsv(imageScan);
             log.debug(imageName + " scanned for osv...");
             log.debug("Scanning " + imageName + "for cve...");
-            this.createAllByImageScanCve(imageScan);
+            this.createAllByImageScanCve(imageScan, osvResponses);
             log.debug(imageName + " scanned for cve...");
             imageScan.setResult(Result.FINISHED);
             imageScanCudService.update(imageScan);
@@ -69,168 +71,142 @@ public class PackageThreatServiceImpl implements PackageThreatService {
     }
 
     @Override
-    public void createAllByImageScanOsv(ImageScan imageScan) {
+    public Set<OsvApiBatchResponse> createAllByImageScanOsv(ImageScan imageScan) {
 
         Set<SyftPayload> payloads = imageScan.getSyftPayloads();
 
-        for (SyftPayload payload : payloads) {
+        Set<OsvApiBatchRequest> requests = payloads
+                .stream()
+                .parallel()
+                .map(payload -> new OsvApiBatchRequest(payload, mapPayloadToApiRequest(payload)))
+                .collect(Collectors.toSet());
 
-            OsvApiRequest osvApiRequest = OsvApiRequest
-                    .builder()
-                    .osvPackage(new OsvApiRequest.OsvPackage(getPayloadName(payload), getPayloadType(payload)))
-                    .version(payload.getVersion())
-                    .build();
+        Set<OsvApiBatchResponse> responses = requests
+                .stream()
+                .parallel()
+                .map(request -> {
+                    try {
+                        return new OsvApiBatchResponse(request.syftPayload(), osvApiClientService
+                                .getOsvVulnerabilityResponse((request.request())));
+                    } catch (IOException | InterruptedException e) {
+                        log.debug("ERROR FOR OSV REQUEST: " + request);
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .filter(osvApiResponse -> osvApiResponse.response() != null)
+                .filter(osvApiResponse -> osvApiResponse.response().vulnerabilities() != null)
+                .collect(Collectors.toSet());
 
-            OsvApiResponse osvApiResponse = null;
-            try {
-                osvApiResponse = osvApiClientService
-                        .getOsvVulnerabilityResponse(osvApiRequest);
-            } catch (IOException | InterruptedException e) {
-                log.debug("ERROR FOR OSV REQUEST: " + osvApiRequest);
-            }
+        responses.forEach(response ->
+                createOsvPackageThreatForPayload(response.syftPayload(), response.response()));
 
-            if (osvApiResponse != null && osvApiResponse.vulnerabilities() != null) {
-
-                for (OsvApiResponse.OsvApiVulnerability vulnerability :
-                        osvApiResponse.vulnerabilities()) {
-
-                    var packageThreat = new PackageThreatOsv();
-
-                    packageThreat.setOsvId(vulnerability.id());
-                    packageThreat.setSummary(vulnerability.summary());
-                    packageThreat.setDetails(vulnerability.details());
-
-                    ZonedDateTime modified = parseToZonedDateTime(vulnerability.modified());
-                    packageThreat.setModified(modified);
-
-                    ZonedDateTime published = parseToZonedDateTime(vulnerability.published());
-                    packageThreat.setPublished(published);
-
-                    packageThreat.setSeverity(OsvApiMapperService.getSeverityFromVulnerability(vulnerability));
-
-                    packageThreat.setSyftPayload(payload);
-
-                    packageThreatOsvCudService.create(packageThreat);
-
-                    payload.addPackageThreatOsv(packageThreat);
-                }
-                syftPayloadCudService.update(payload);
-            }
-        }
+        return responses;
     }
 
     @Override
-    public void createAllByImageScanCve(ImageScan imageScan) {
+    public void createAllByImageScanCve(ImageScan imageScan, Set<OsvApiBatchResponse> osvApiBatchResponses) {
 
-        Set<SyftPayload> payloads = imageScan.getSyftPayloads();
-
-        for (SyftPayload payload : payloads) {
-
-            OsvApiRequest osvApiRequest = OsvApiRequest
-                    .builder()
-                    .osvPackage(new OsvApiRequest.OsvPackage(getPayloadName(payload), getPayloadType(payload)))
-                    .version(payload.getVersion())
-                    .build();
-
-            OsvApiResponse osvApiResponse = null;
-            try {
-                osvApiResponse = osvApiClientService
-                        .getOsvVulnerabilityResponse(osvApiRequest);
-            } catch (InterruptedException | IOException e) {
-                log.debug("ERROR FOR OSV - CVE REQUEST: " + osvApiRequest);
-            }
-
-            if (osvApiResponse != null && osvApiResponse.vulnerabilities() != null) {
-
-                for (OsvApiResponse.OsvApiVulnerability vulnerability :
-                        osvApiResponse.vulnerabilities()) {
-
-                    CveApiRequest cveApiRequest = CveApiRequest
-                            .builder()
-                            .cve(vulnerability.aliases() != null ? getCveAlias(vulnerability) : "")
-                            .build();
-
-                    CveApiResponse cveApiResponse = null;
-                    try {
-                        cveApiResponse = cveApiClientService.getOsvVulnerabilityResponse(cveApiRequest);
-                    } catch (IOException | InterruptedException e) {
-                        log.debug("ERROR FOR CVE REQUEST: " + osvApiRequest);
-                    }
-
-                    if (cveApiResponse != null) {
-
-                        var packageThreat = new PackageThreatCve();
-
-                        packageThreat.setCveId(cveApiResponse.id());
-                        packageThreat.setSummary(cveApiResponse.summary());
-                        packageThreat.setDetails(cveApiResponse.summary());
-
-                        ZonedDateTime modified = parseToZonedDateTime(cveApiResponse.modified());
-                        packageThreat.setModified(modified);
-
-                        ZonedDateTime published = parseToZonedDateTime(cveApiResponse.published());
-                        packageThreat.setModified(published);
-
-                        packageThreat.setSeverity(CveApiMapperService.getSeverity(cveApiResponse));
-
-                        packageThreat.setSyftPayload(payload);
-
-                        packageThreatCveCudService.create(packageThreat);
-
-                        payload.addPackageThreatCve(packageThreat);
-                    }
-                }
-                syftPayloadCudService.update(payload);
-            }
-        }
-    }
-
-    private String getPayloadName(SyftPayload syftPayload) {
-        String syftName = syftPayload.getName();
-        if (syftName.contains("spring-boot")) {
-            syftName = "org.springframework.boot:" + syftName;
-        } else if (syftName.contains("spring")) {
-            syftName = "org.springframework:" + syftName;
-        } else if (syftName.contains("log4j")) {
-            syftName = "org.apache.logging.log4j:" + syftName;
-        }
-        return syftName;
-    }
-
-    private String getPayloadType(SyftPayload syftPayload) {
-        String syftType = syftPayload.getType();
-        return switch (syftType) {
-
-            case "java-archive" -> "Maven";
-            case "deb" -> "Debian";
-            case "python" -> "PyPI";
-            case "rpm" -> "Linux";
-            default -> syftType;
-        };
-    }
-
-    private ZonedDateTime parseToZonedDateTime(String dateTimeString) {
-        DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-        DateTimeFormatter zonedDateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
-        try {
-            LocalDateTime localDateTime = LocalDateTime.parse(dateTimeString, localDateTimeFormatter);
-            return localDateTime.atZone(ZoneId.systemDefault());
-        } catch (DateTimeParseException e) {
-            try {
-                return ZonedDateTime.parse(dateTimeString, zonedDateTimeFormatter);
-            } catch (DateTimeParseException ex) {
-                throw new DateTimeParseException("Date cannot be parsed: " + dateTimeString, dateTimeString, 0);
-            }
-        }
-    }
-
-    private String getCveAlias(OsvApiResponse.OsvApiVulnerability vulnerability) {
-        return vulnerability.
-                aliases()
+        Set<CveApiBatchRequest> requests = osvApiBatchResponses
                 .stream()
-                .filter(x -> x.contains("CVE"))
-                .findAny()
-                .orElse("");
+                .parallel()
+                .filter(osvRequest -> osvRequest.response() != null)
+                .filter(osvRequest -> osvRequest.response().vulnerabilities() != null)
+                .flatMap(osvRequest -> {
+                    SyftPayload payload = osvRequest.syftPayload();
+                    Set<CveApiRequest> cveApiRequests = osvRequest.response()
+                            .vulnerabilities()
+                            .stream()
+                            .parallel()
+                            .map(vulnerability-> CveApiRequest
+                                            .builder()
+                                            .cve(vulnerability.aliases() != null ? getCveAlias(vulnerability) : "")
+                                            .build()
+                            )
+                            .collect(Collectors.toSet());
+                    return cveApiRequests
+                            .stream()
+                            .parallel()
+                            .map(batchRequest -> new CveApiBatchRequest(payload, batchRequest));
+                })
+                .collect(Collectors.toSet());
+
+        Set<CveApiBatchResponse> responses = requests
+                .stream()
+                .parallel()
+                .map(request -> {
+                    try {
+                        return new CveApiBatchResponse(request.syftPayload(), cveApiClientService
+                                .getOsvVulnerabilityResponse((request.request())));
+                    } catch (IOException | InterruptedException e) {
+                        log.debug("ERROR FOR CVE REQUEST: " + request);
+                        return null;
+                    }
+                }).collect(Collectors.toSet());
+
+        responses
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(response -> response.syftPayload() != null)
+                .filter(response -> response.response() != null)
+                .collect(groupingBy(CveApiBatchResponse::syftPayload))
+                .forEach(this::createCvePackageThreatForPayload);
+    }
+
+    private void createOsvPackageThreatForPayload(SyftPayload payload, OsvApiResponse osvApiResponse) {
+        for (OsvApiResponse.OsvApiVulnerability vulnerability :
+                osvApiResponse.vulnerabilities()) {
+
+            var packageThreat = new PackageThreatOsv();
+
+            packageThreat.setOsvId(vulnerability.id());
+            packageThreat.setSummary(getSummaryFromVulnerability(vulnerability));
+            packageThreat.setDetails(vulnerability.details());
+
+            packageThreat.setAliases(getAliasesFromVulnerability(vulnerability));
+
+            ZonedDateTime modified = parseToZonedDateTime(vulnerability.modified());
+            packageThreat.setModified(modified);
+
+            ZonedDateTime published = parseToZonedDateTime(vulnerability.published());
+            packageThreat.setPublished(published);
+
+            packageThreat.setSeverity(OsvApiMapperService.getSeverityFromVulnerability(vulnerability));
+
+            packageThreat.setSyftPayload(payload);
+
+            packageThreatOsvCudService.create(packageThreat);
+
+            payload.addPackageThreatOsv(packageThreat);
+        }
+        syftPayloadCudService.update(payload);
+    }
+
+    private void createCvePackageThreatForPayload(SyftPayload payload, List<CveApiBatchResponse> responses) {
+
+        for (CveApiBatchResponse cveApiResponse : responses) {
+            var packageThreat = new PackageThreatCve();
+
+            packageThreat.setCveId(cveApiResponse.response().id());
+            packageThreat.setSummary(cveApiResponse.response().summary());
+            packageThreat.setDetails(cveApiResponse.response().summary());
+
+            ZonedDateTime modified = parseToZonedDateTime(cveApiResponse.response().modified());
+            packageThreat.setModified(modified);
+
+            ZonedDateTime published = parseToZonedDateTime(cveApiResponse.response().published());
+            packageThreat.setModified(published);
+
+            packageThreat.setSeverity(CveApiMapperService.getSeverity(cveApiResponse.response()));
+
+            packageThreat.setSyftPayload(payload);
+
+            packageThreatCveCudService.create(packageThreat);
+
+            payload.addPackageThreatCve(packageThreat);
+        }
+
+        syftPayloadCudService.update(payload);
     }
 }
 

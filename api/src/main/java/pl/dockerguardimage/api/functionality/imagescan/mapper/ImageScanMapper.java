@@ -28,18 +28,20 @@ public class ImageScanMapper {
                 osv.getDetails(),
                 osv.getModified(),
                 osv.getPublished(),
-                osv.getSeverity()
+                osv.getSeverity(),
+                osv.getAliases()
         );
     }
 
-    public static PackageThreatDto mapCveToPackageDto(PackageThreatCve osv) {
+    public static PackageThreatDto mapCveToPackageDto(PackageThreatCve cve) {
         return new PackageThreatDto(
-                osv.getCveId(),
-                osv.getSummary(),
-                osv.getDetails(),
-                osv.getModified(),
-                osv.getPublished(),
-                osv.getSeverity()
+                cve.getCveId(),
+                cve.getSummary(),
+                cve.getDetails(),
+                cve.getModified(),
+                cve.getPublished(),
+                cve.getSeverity(),
+                cve.getCveId()
         );
     }
 
