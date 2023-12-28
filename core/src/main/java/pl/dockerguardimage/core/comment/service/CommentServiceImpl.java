@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.dockerguardimage.core.comment.dto.CommentDTO;
 import pl.dockerguardimage.core.comment.dto.CommentGetDTO;
 import pl.dockerguardimage.core.comment.mapper.CommentMapper;
+import pl.dockerguardimage.core.functionality.notification.service.NotificationService;
 import pl.dockerguardimage.data.functionality.comment.domain.Comment;
 import pl.dockerguardimage.data.functionality.comment.service.CommentCudService;
 import pl.dockerguardimage.data.functionality.imagescan.service.ImageScanQueryService;
@@ -19,6 +20,7 @@ class CommentServiceImpl implements CommentService {
     private final CommentCudService commentCudService;
     private final UserQueryService userQueryService;
     private final ImageScanQueryService imageScanQueryService;
+    private final NotificationService notificationService;
 
     @Override
     public CommentGetDTO create(CommentDTO dto) {
@@ -30,6 +32,7 @@ class CommentServiceImpl implements CommentService {
         comment.setAuthor(user);
         comment.setImageScan(imageScan);
         var created = commentCudService.create(comment);
+        notificationService.addComment(comment);
         return CommentMapper.map(created);
     }
 

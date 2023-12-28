@@ -43,16 +43,12 @@ class NotificationGetAndUpdateServiceImpl implements NotificationGetAndUpdateSer
     }
 
     private String buildMessage(Notification notification) {
-        switch (notification.getType()) {
-            case FILE_ACCESS_ADD_READ:
-            case FILE_ACCESS_REMOVE:
-            case FILE_ACCESS_ADD_WRITE:
-            case FILE_ACCESS_UPDATE_READ:
-            case FILE_ACCESS_UPDATE_WRITE:
-                return apiMessageSource.getMessage(notification.getMessage(), new String[]{notification.getUsername(), notification.getAdditionalInformation()}, new Locale(UserContextHolder.getAuthenticatedUser().locale()));
-        }
+        return switch (notification.getType()) {
+            case FILE_ACCESS_ADD_READ, FILE_ACCESS_REMOVE, FILE_ACCESS_ADD_WRITE, FILE_ACCESS_UPDATE_READ, FILE_ACCESS_UPDATE_WRITE, COMMENT ->
+                    apiMessageSource.getMessage(notification.getMessage(), new String[]{notification.getUsername(), notification.getAdditionalInformation()}, new Locale(UserContextHolder.getAuthenticatedUser().locale()));
+            default -> "";
+        };
 
-        return "";
     }
 
 }
