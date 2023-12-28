@@ -28,7 +28,7 @@ public class Comment implements EntityId<Long> {
     private String text;
 
     @Column(name = "date", nullable = false)
-    private LocalDateTime date;
+    private LocalDateTime date = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="image_scan_id", nullable=false)

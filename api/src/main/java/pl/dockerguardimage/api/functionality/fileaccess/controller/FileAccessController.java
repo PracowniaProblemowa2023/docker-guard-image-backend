@@ -2,6 +2,7 @@ package pl.dockerguardimage.api.functionality.fileaccess.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.dockerguardimage.api.functionality.fileaccess.mapper.FileAccessMapper;
 import pl.dockerguardimage.api.functionality.fileaccess.model.FileAccessRemoveRequest;
@@ -10,10 +11,12 @@ import pl.dockerguardimage.api.functionality.fileaccess.model.FileAccessResponse
 import pl.dockerguardimage.core.functionality.fileaccess.dto.FileAccessDTO;
 import pl.dockerguardimage.core.functionality.fileaccess.dto.FileAccessRemoveDTO;
 import pl.dockerguardimage.core.functionality.fileaccess.service.FileAccessService;
+import pl.dockerguardimage.core.validator.annotation.UserHasAccessToImageScan;
 import pl.dockerguardimage.data.functionality.fileaccess.service.FileAccessQueryService;
 
 import java.util.List;
 
+@Validated
 @CrossOrigin("*")
 @AllArgsConstructor
 @RestController
@@ -24,7 +27,7 @@ public class FileAccessController {
     private final FileAccessQueryService fileAccessQueryService;
 
     @PostMapping
-    public ResponseEntity<?> manageAccess(@RequestBody FileAccessRequest request) {
+    public ResponseEntity<?> manageAccess(@Validated @RequestBody FileAccessRequest request) {
         var dto = FileAccessDTO.builder()
                 .imageScanId(request.imageScanId())
                 .userId(request.userId())
@@ -35,7 +38,7 @@ public class FileAccessController {
     }
 
     @GetMapping("/{imageScanId}")
-    public ResponseEntity<List<FileAccessResponse>> get(@PathVariable("imageScanId") Long imageScanId) {
+    public ResponseEntity<List<FileAccessResponse>> get(@PathVariable("imageScanId") @UserHasAccessToImageScan Long imageScanId) {
         var fileAccesses = fileAccessQueryService.getAllByImageScanId(imageScanId);
         return ResponseEntity.ok(FileAccessMapper.map(fileAccesses));
     }

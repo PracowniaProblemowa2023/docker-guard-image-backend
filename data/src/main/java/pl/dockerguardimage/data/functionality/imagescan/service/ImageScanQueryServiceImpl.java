@@ -23,7 +23,7 @@ class ImageScanQueryServiceImpl implements ImageScanQueryService {
     }
 
     @Override
-    public ImageScan getById(Long imageScanId, Long userId) {
+    public ImageScan getByIdAndUserId(Long imageScanId, Long userId) {
         Set<ImageScan> imageScans = this.getAllByUserId(userId);
 
         ImageScan imageScan = repository.findById(imageScanId)
@@ -31,8 +31,13 @@ class ImageScanQueryServiceImpl implements ImageScanQueryService {
 
         if (imageScans.contains(imageScan)) {
             return imageScan;
-        }
-        else throw new EntityNotFoundException();
+        } else throw new EntityNotFoundException();
+    }
+
+    @Override
+    public ImageScan getById(Long imageScanId) {
+        return repository.findById(imageScanId)
+                .orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
