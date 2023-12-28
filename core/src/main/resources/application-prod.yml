@@ -1,6 +1,6 @@
 syft:
   directory: /tmp/syft-%d
-  command: syft %s --scope all-layers > %s
+  command: bash -c syft %s --scope all-layers > %s
 
 jobs:
   enabled: true
