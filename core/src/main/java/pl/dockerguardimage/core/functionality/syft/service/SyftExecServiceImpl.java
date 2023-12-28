@@ -25,9 +25,10 @@ class SyftExecServiceImpl implements SyftExecService {
     public void execute(ImageScan imageScan) {
         var name = imageScan.getImageName().split("/")[0];
         var command = buildCommand(name, imageScan.getId());
+        String[] command2 = {"/bin/bash", "-c", command};
         int exitCode;
         try {
-            var process = Runtime.getRuntime().exec(command);
+            var process = Runtime.getRuntime().exec(command2);
             saveErrorIfExist(process.getErrorStream(), imageScan);
             exitCode = process.waitFor();
         } catch (InterruptedException | IOException e) {
