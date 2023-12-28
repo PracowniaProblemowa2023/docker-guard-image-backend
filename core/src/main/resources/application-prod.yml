@@ -1,6 +1,7 @@
 syft:
   directory: /tmp/syft-%d.txt
   command: syft %s --scope all-layers > %s
+  type: linux
 
 jobs:
   enabled: true

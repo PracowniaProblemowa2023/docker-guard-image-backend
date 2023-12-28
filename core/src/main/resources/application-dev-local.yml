@@ -1,6 +1,7 @@
 syft:
   directory: C:\syft\syft-%d.txt
   command: cmd /c syft %s --scope all-layers > %s
+  type: windows
 
 jobs:
   enabled: true

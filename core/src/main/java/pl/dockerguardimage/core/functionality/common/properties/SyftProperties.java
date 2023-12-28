@@ -19,5 +19,6 @@ public class SyftProperties {
 
     private String directory;
     private String command;
+    private String type;
 
 }
