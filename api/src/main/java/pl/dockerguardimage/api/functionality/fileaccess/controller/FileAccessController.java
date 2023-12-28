@@ -4,10 +4,15 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.dockerguardimage.api.functionality.fileaccess.mapper.FileAccessMapper;
+import pl.dockerguardimage.api.functionality.fileaccess.model.FileAccessRemoveRequest;
 import pl.dockerguardimage.api.functionality.fileaccess.model.FileAccessRequest;
+import pl.dockerguardimage.api.functionality.fileaccess.model.FileAccessResponse;
 import pl.dockerguardimage.core.functionality.fileaccess.dto.FileAccessDTO;
+import pl.dockerguardimage.core.functionality.fileaccess.dto.FileAccessRemoveDTO;
 import pl.dockerguardimage.core.functionality.fileaccess.service.FileAccessService;
 import pl.dockerguardimage.data.functionality.fileaccess.service.FileAccessQueryService;
+
+import java.util.List;
 
 @CrossOrigin("*")
 @AllArgsConstructor
@@ -19,7 +24,7 @@ public class FileAccessController {
     private final FileAccessQueryService fileAccessQueryService;
 
     @PostMapping
-    public ResponseEntity<?> manageAccess(FileAccessRequest request) {
+    public ResponseEntity<?> manageAccess(@RequestBody FileAccessRequest request) {
         var dto = FileAccessDTO.builder()
                 .imageScanId(request.imageScanId())
                 .userId(request.userId())
@@ -30,9 +35,19 @@ public class FileAccessController {
     }
 
     @GetMapping("/{imageScanId}")
-    public ResponseEntity<?> get(@PathVariable("imageScanId") Long imageScanId) {
+    public ResponseEntity<List<FileAccessResponse>> get(@PathVariable("imageScanId") Long imageScanId) {
         var fileAccesses = fileAccessQueryService.getAllByImageScanId(imageScanId);
         return ResponseEntity.ok(FileAccessMapper.map(fileAccesses));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> remove(@RequestBody FileAccessRemoveRequest request) {
+        var dto = FileAccessRemoveDTO.builder()
+                .imageScanId(request.imageScanId())
+                .userId(request.userId())
+                .build();
+        fileAccessService.delete(dto);
+        return ResponseEntity.ok().build();
     }
 
 }

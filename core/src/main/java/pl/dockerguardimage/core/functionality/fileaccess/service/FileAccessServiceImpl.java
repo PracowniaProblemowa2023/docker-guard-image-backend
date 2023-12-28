@@ -4,16 +4,19 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.dockerguardimage.core.functionality.fileaccess.dto.FileAccessDTO;
+import pl.dockerguardimage.core.functionality.fileaccess.dto.FileAccessRemoveDTO;
 import pl.dockerguardimage.core.functionality.notification.service.NotificationService;
 import pl.dockerguardimage.data.functionality.accesstype.domain.AccessType;
 import pl.dockerguardimage.data.functionality.fileaccess.domain.FileAccess;
 import pl.dockerguardimage.data.functionality.fileaccess.domain.FileAccessId;
 import pl.dockerguardimage.data.functionality.fileaccess.service.FileAccessCudService;
+import pl.dockerguardimage.data.functionality.fileaccess.service.FileAccessQueryService;
 import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
 import pl.dockerguardimage.data.functionality.imagescan.service.ImageScanQueryService;
 import pl.dockerguardimage.data.functionality.notification.service.AccessTypeCudService;
 import pl.dockerguardimage.data.functionality.user.domain.User;
 import pl.dockerguardimage.data.functionality.user.service.UserQueryService;
+import pl.dockerguardimage.security.functionality.user.context.UserContextHolder;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,6 +30,7 @@ public class FileAccessServiceImpl implements FileAccessService {
     private final UserQueryService userQueryService;
     private final NotificationService notificationService;
     private final FileAccessCudService fileAccessCudService;
+    private final FileAccessQueryService fileAccessQueryService;
     private final AccessTypeCudService accessTypeCudService;
 
     @Override
@@ -43,6 +47,19 @@ public class FileAccessServiceImpl implements FileAccessService {
         }
 
         addNewAccessToFile(dto, imageScan, user);
+    }
+
+    @Override
+    public void delete(FileAccessRemoveDTO dto) {
+        var fileAccess = fileAccessQueryService.getById(new FileAccessId(dto.userId(), dto.imageScanId()));
+        var user = userQueryService.getById(UserContextHolder.getAuthenticatedUser().id());
+        var givenTo = fileAccess.getUser();
+        notificationService.removedAccessType(user, givenTo, fileAccess);
+        var accessType = fileAccess.getAccessType();
+        fileAccess.setAccessType(null);
+        accessType.setFileAccess(null);
+        accessTypeCudService.delete(accessType);
+        fileAccessCudService.delete(fileAccess);
     }
 
     private void addNewAccessToFile(FileAccessDTO dto, ImageScan imageScan, User user) {

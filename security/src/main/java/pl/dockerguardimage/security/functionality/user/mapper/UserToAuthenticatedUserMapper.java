@@ -21,6 +21,7 @@ public class UserToAuthenticatedUserMapper {
                 .firstname(created.getFirstname())
                 .lastname(created.getLastname())
                 .email(created.getEmail())
+                .locale(created.getLocale())
                 .roles(userRoles)
                 .build();
     }
