@@ -70,6 +70,7 @@ public class ImageScanMapper {
                 .id(imageScan.getId())
                 .imageName(imageScan.getImageName())
                 .date(imageScan.getDate())
+                .permission(UserContextHolder.getAuthenticatedUser().id().equals(imageScan.getAuthor().getId()) ? AccessTypePermission.WRITE : AccessTypePermission.READ)
                 .result(imageScan.getResult())
                 .author(imageScan.getAuthor().getFullName())
                 .payloads(syftPayloadDtos)
