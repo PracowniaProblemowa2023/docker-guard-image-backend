@@ -195,7 +195,7 @@ public class PackageThreatServiceImpl implements PackageThreatService {
             packageThreat.setModified(modified);
 
             ZonedDateTime published = parseToZonedDateTime(cveApiResponse.response().published());
-            packageThreat.setModified(published);
+            packageThreat.setPublished(published);
 
             packageThreat.setSeverity(CveApiMapperService.getSeverity(cveApiResponse.response()));
 
