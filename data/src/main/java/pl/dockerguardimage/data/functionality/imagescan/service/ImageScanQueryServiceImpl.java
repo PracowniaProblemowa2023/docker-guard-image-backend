@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
 import pl.dockerguardimage.data.functionality.imagescan.domain.Result;
 
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -16,11 +15,6 @@ import java.util.Set;
 class ImageScanQueryServiceImpl implements ImageScanQueryService {
 
     private final ImageScanRepository repository;
-
-    @Override
-    public Optional<ImageScan> getOptByImage(String name) {
-        return repository.findOptByImageName(name);
-    }
 
     @Override
     public ImageScan getById(Long imageScanId) {

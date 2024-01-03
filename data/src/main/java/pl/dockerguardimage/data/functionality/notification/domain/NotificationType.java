@@ -7,7 +7,8 @@ import lombok.Getter;
 @Getter
 public enum NotificationType {
 
-    SCAN_COMPLETED("common.scanCompleted="),
+    SCAN_COMPLETED("common.scanCompleted"),
+    SCAN_ERROR("common.scanWithErrors"),
     COMMENT("common.comment"),
     FILE_ACCESS_ADD_READ("common.addAccessRead"),
     FILE_ACCESS_ADD_WRITE("common.addAccessWrite"),

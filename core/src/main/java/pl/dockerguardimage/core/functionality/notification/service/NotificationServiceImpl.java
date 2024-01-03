@@ -7,6 +7,7 @@ import pl.dockerguardimage.data.functionality.accesstype.domain.AccessTypePermis
 import pl.dockerguardimage.data.functionality.accesstype.service.NotificationCudService;
 import pl.dockerguardimage.data.functionality.comment.domain.Comment;
 import pl.dockerguardimage.data.functionality.fileaccess.domain.FileAccess;
+import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
 import pl.dockerguardimage.data.functionality.notification.domain.Notification;
 import pl.dockerguardimage.data.functionality.notification.domain.NotificationType;
 import pl.dockerguardimage.data.functionality.user.domain.User;
@@ -56,6 +57,33 @@ class NotificationServiceImpl implements NotificationService {
         notification.setUsername(comment.getAuthor().getFullName());
         notification.setAdditionalInformation(comment.getImageScan().getImageName());
         notification.setElementId(comment.getImageScan().getId());
+        users.forEach(notification::addUser);
+        return notificationCudService.create(notification);
+    }
+
+    @Override
+    public Notification scanCompleted(ImageScan imageScan) {
+        return createNow(imageScan, NotificationType.SCAN_COMPLETED);
+    }
+
+    @Override
+    public Notification scanWithErrors(ImageScan imageScan) {
+        return createNow(imageScan, NotificationType.SCAN_ERROR);
+    }
+
+    private Notification createNow(ImageScan imageScan, NotificationType type) {
+        var author = imageScan.getAuthor();
+        var users = imageScan.getFileAccesses()
+                .stream()
+                .map(FileAccess::getUser)
+                .collect(Collectors.toSet());
+        users.add(author);
+        var notification = new Notification();
+        notification.setType(type);
+        notification.setMessage(type.getMessage());
+        notification.setUsername(author.getFullName());
+        notification.setAdditionalInformation(imageScan.getImageName());
+        notification.setElementId(imageScan.getId());
         users.forEach(notification::addUser);
         return notificationCudService.create(notification);
     }

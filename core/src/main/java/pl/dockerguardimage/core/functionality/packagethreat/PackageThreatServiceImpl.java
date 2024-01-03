@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.dockerguardimage.core.functionality.notification.service.NotificationService;
 import pl.dockerguardimage.core.functionality.packagethreat.cve.model.CveApiBatchRequest;
 import pl.dockerguardimage.core.functionality.packagethreat.cve.model.CveApiBatchResponse;
 import pl.dockerguardimage.core.functionality.packagethreat.cve.model.CveApiMapperService;
@@ -48,6 +49,7 @@ public class PackageThreatServiceImpl implements PackageThreatService {
     private final ImageScanCudService imageScanCudService;
     private final PackageThreatOsvCudService packageThreatOsvCudService;
     private final PackageThreatCveCudService packageThreatCveCudService;
+    private final NotificationService notificationService;
 
     public void executeImageScanInProgressJob() {
         Iterable<ImageScan> imageScans = imageScanQueryService.getAllByResult(Result.PROGRESS);
@@ -66,6 +68,7 @@ public class PackageThreatServiceImpl implements PackageThreatService {
             log.debug(imageName + " scanned for cve...");
             imageScan.setResult(Result.FINISHED);
             imageScanCudService.update(imageScan);
+            notificationService.scanCompleted(imageScan);
             log.debug(imageName + " scan successfully finished...");
         }
     }

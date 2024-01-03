@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.dockerguardimage.core.functionality.notification.service.NotificationService;
 import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
 import pl.dockerguardimage.data.functionality.imagescan.domain.Result;
 import pl.dockerguardimage.data.functionality.imagescan.service.ImageScanCudService;
@@ -22,12 +23,14 @@ public class SyftServiceImpl implements SyftService {
     private final SyftPayloadCudService syftPayloadCudService;
     private final SyftExecService syftExecService;
     private final SyftPayloadParserService syftPayloadParserService;
+    private final NotificationService notificationService;
 
     @Override
     public Set<SyftPayload> createAllByImageScan(ImageScan imageScan) {
         syftExecService.execute(imageScan);
         if (!Strings.isNullOrEmpty(imageScan.getErrorMsg())) {
             imageScanCudService.update(imageScan);
+            notificationService.scanWithErrors(imageScan);
             return new HashSet<>();
         }
 

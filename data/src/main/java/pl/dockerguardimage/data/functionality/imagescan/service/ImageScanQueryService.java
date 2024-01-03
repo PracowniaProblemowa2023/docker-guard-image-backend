@@ -3,11 +3,9 @@ package pl.dockerguardimage.data.functionality.imagescan.service;
 import pl.dockerguardimage.data.functionality.imagescan.domain.ImageScan;
 import pl.dockerguardimage.data.functionality.imagescan.domain.Result;
 
-import java.util.Optional;
 import java.util.Set;
 
 public interface ImageScanQueryService {
-    Optional<ImageScan> getOptByImage(String name);
 
     ImageScan getById(Long imageScanId);
 

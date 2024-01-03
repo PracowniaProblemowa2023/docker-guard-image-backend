@@ -46,7 +46,8 @@ class NotificationGetAndUpdateServiceImpl implements NotificationGetAndUpdateSer
         return switch (notification.getType()) {
             case FILE_ACCESS_ADD_READ, FILE_ACCESS_REMOVE, FILE_ACCESS_ADD_WRITE, FILE_ACCESS_UPDATE_READ, FILE_ACCESS_UPDATE_WRITE, COMMENT ->
                     apiMessageSource.getMessage(notification.getMessage(), new String[]{notification.getUsername(), notification.getAdditionalInformation()}, new Locale(UserContextHolder.getAuthenticatedUser().locale()));
-            default -> "";
+            case SCAN_COMPLETED, SCAN_ERROR ->
+                    apiMessageSource.getMessage(notification.getMessage(), new String[]{notification.getAdditionalInformation()}, new Locale(UserContextHolder.getAuthenticatedUser().locale()));
         };
 
     }
