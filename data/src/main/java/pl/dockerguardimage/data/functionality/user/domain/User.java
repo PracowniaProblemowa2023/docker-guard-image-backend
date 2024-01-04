@@ -14,6 +14,7 @@ import pl.dockerguardimage.data.functionality.role.domain.Role;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -84,5 +85,18 @@ public class User implements EntityId<Long> {
     public void addFileAccess(FileAccess fileAccess) {
         getFileAccesses().add(fileAccess);
         fileAccess.setUser(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.nonNull(getId()) && Objects.equals(getId(), user.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

@@ -12,7 +12,10 @@ class UserCacheImpl implements UserCache {
 
     @Override
     public Set<String> putAndGetUserRole(AuthenticatedUser user, String session) {
-        userRoleByUsername.put(user.username(), new UserRole(session, user));
+        if (!userRoleByUsername.containsKey(user.username())) {
+            userRoleByUsername.put(user.username(), new UserRole(session, user));
+        }
+
         return user.roles();
     }
 
