@@ -23,7 +23,7 @@ class SyftExecServiceImpl implements SyftExecService {
 
     @Override
     public void execute(ImageScan imageScan) {
-        var name = imageScan.getImageName().split("/")[0];
+        var name = imageScan.getImageName();
         var command = buildCommand(name, imageScan.getId());
         int exitCode;
         try {
