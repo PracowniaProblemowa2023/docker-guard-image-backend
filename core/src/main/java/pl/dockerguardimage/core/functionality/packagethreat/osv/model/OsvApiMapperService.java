@@ -1,5 +1,6 @@
 package pl.dockerguardimage.core.functionality.packagethreat.osv.model;
 
+import pl.dockerguardimage.core.functionality.packagethreat.mapping.SyftOsvEcosystemMapping;
 import pl.dockerguardimage.data.functionality.syft.domain.SyftPayload;
 
 import java.time.LocalDateTime;
@@ -7,6 +8,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Arrays;
 
 public class OsvApiMapperService {
 
@@ -52,14 +54,12 @@ public class OsvApiMapperService {
 
     public static String getPayloadType(SyftPayload syftPayload) {
         String syftType = syftPayload.getType();
-        return switch (syftType) {
-
-            case "java-archive" -> "Maven";
-            case "deb" -> "Debian";
-            case "python" -> "PyPI";
-            case "rpm" -> "Linux";
-            default -> syftType;
-        };
+        return Arrays
+                .stream(SyftOsvEcosystemMapping.values())
+                .filter(value -> value.getSyftEcosystem().equals(syftType))
+                .findAny()
+                .map(SyftOsvEcosystemMapping::getOsvEcosystem)
+                .orElse(syftType);
     }
 
     public static ZonedDateTime parseToZonedDateTime(String dateTimeString) {
@@ -93,5 +93,4 @@ public class OsvApiMapperService {
                 .version(payload.getVersion())
                 .build();
     }
-
 }
