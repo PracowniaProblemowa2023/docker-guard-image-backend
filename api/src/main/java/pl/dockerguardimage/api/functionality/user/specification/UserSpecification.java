@@ -44,7 +44,7 @@ public class UserSpecification extends BaseSpecification<User, UserSearchCriteri
             if (Strings.isNullOrEmpty(payload)) {
                 return null;
             }
-            return cb.like(cb.concat(root.get("firstname"), cb.concat(" ", root.get("lastname"))), containsLowerCase(payload));
+            return cb.like(cb.lower(cb.concat(root.get("firstname"), cb.concat(" ", root.get("lastname")))), containsLowerCase(payload));
         };
     }
 
